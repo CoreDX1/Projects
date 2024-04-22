@@ -1,6 +1,6 @@
-﻿namespace Api.Data;
+﻿namespace Api.Models;
 
-public partial class Task
+public partial class Tasks
 {
     public int Id { get; set; }
 

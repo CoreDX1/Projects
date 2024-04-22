@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Api.Models;
 
 namespace Api.Data;
 
@@ -11,10 +12,7 @@ public partial class Semana01Context : DbContext
 
     public virtual DbSet<Account> Accounts { get; set; }
 
-    public virtual DbSet<Task> Tasks { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseNpgsql("Server=localhost;Port=8080;Database=semana01;TrustServerCertificate=True;User id=core;Password=index");
+    public virtual DbSet<Tasks> Tasks { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -39,7 +37,7 @@ public partial class Semana01Context : DbContext
                 .HasColumnName("user_name");
         });
 
-        modelBuilder.Entity<Task>(entity =>
+        modelBuilder.Entity<Tasks>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("task_pkey");
 
@@ -64,7 +62,7 @@ public partial class Semana01Context : DbContext
                 .HasColumnName("update_at");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
-            entity.HasOne(d => d.User).WithMany(p => p.Tasks)
+            entity.HasOne(d => d.User).WithMany(p => p.TodoTasks)
               .HasForeignKey(d => d.UserId)
               .OnDelete(DeleteBehavior.ClientSetNull)
               .HasConstraintName("fk_account");

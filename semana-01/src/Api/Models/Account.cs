@@ -1,4 +1,4 @@
-﻿namespace Api.Data;
+﻿namespace Api.Models;
 
 public partial class Account
 {
@@ -12,5 +12,5 @@ public partial class Account
 
     public DateTime CreateAt { get; set; }
 
-    public virtual ICollection<Task> Tasks { get; set; } = new List<Task>();
+    public virtual ICollection<Tasks> TodoTasks { get; set; } = new List<Tasks>();
 }
