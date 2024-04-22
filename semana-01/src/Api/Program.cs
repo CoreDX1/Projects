@@ -8,13 +8,14 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
 var app = builder.Build();
+
 IConfiguration Configurations = app.Configuration;
 var assembly = typeof(Program).Assembly.GetName().Name;
 
 builder.Services.AddDbContext<Semana01Context>(options =>
 {
     options.UseNpgsql(
-        Configurations.GetConnectionString("Semana01"),
+        Configurations.GetConnectionString("StringConnection"),
         b => b.MigrationsAssembly(assembly)
         );
 });
