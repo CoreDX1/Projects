@@ -29,11 +29,6 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<ActionResult> AddAccount([FromBody] AccountDto account)
     {
-        if (ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
         var response = await _app.PostRegister(account);
         return Ok(response);
     }

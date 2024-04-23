@@ -25,7 +25,7 @@ public class AccountService : IAccountService
     public async Task<Account> PostRegister(AccountDto account)
     {
 
-        Account newAccount = new Account { Email = account.Email, Password = account.Password, UserName = account.UserName };
+        Account newAccount = new() { Email = account.Email, Password = account.Password, UserName = account.UserName };
 
         await _db.Accounts.AddAsync(newAccount);
         await _db.SaveChangesAsync();
