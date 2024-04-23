@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Api.Models;
+using Api.Models.Entities;
 
 namespace Api.Data;
 
@@ -31,7 +31,8 @@ public partial class Semana01Context : DbContext
             entity.Property(e => e.Email)
                 .HasMaxLength(100)
                 .HasColumnName("email");
-            entity.Property(e => e.Password).HasColumnName("password");
+            entity.Property(e => e.Password).HasColumnName("password")
+            .HasMaxLength(25);
             entity.Property(e => e.UserName)
                 .HasMaxLength(200)
                 .HasColumnName("user_name");

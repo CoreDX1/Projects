@@ -1,4 +1,6 @@
 using Api.Data;
+using Api.Services;
+using Api.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,19 +8,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+builder.Services.AddTransient<IAccountService, AccountService>();
 
-var app = builder.Build();
-
-IConfiguration Configurations = app.Configuration;
-var assembly = typeof(Program).Assembly.GetName().Name;
 
 builder.Services.AddDbContext<Semana01Context>(options =>
 {
     options.UseNpgsql(
-        Configurations.GetConnectionString("StringConnection"),
-        b => b.MigrationsAssembly(assembly)
-        );
+        builder.Configuration.GetConnectionString("StringConnection"));
 });
+
+var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

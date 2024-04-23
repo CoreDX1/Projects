@@ -1,4 +1,4 @@
-﻿namespace Api.Models;
+﻿namespace Api.Models.Entities;
 
 public partial class Account
 {
@@ -6,7 +6,7 @@ public partial class Account
 
     public string UserName { get; set; } = null!;
 
-    public int Password { get; set; }
+    public string Password { get; set; } = null!;
 
     public string Email { get; set; } = null!;
 
