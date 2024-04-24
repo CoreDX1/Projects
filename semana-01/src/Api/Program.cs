@@ -5,16 +5,16 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddControllers();
 builder.Services.AddTransient<IAccountService, AccountService>();
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddControllers();
 
 builder.Services.AddDbContext<Semana01Context>(options =>
 {
-    options.UseNpgsql(
-        builder.Configuration.GetConnectionString("StringConnection"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("StringConnection"));
 });
 
 var app = builder.Build();
@@ -29,6 +29,4 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.MapControllers();
 
-
 app.Run();
-

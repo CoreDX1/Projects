@@ -1,4 +1,6 @@
-﻿namespace Api.Models.Entities;
+﻿using System.Text.Json.Serialization;
+
+namespace Api.Models.Entities;
 
 public partial class Tasks
 {
@@ -18,5 +20,6 @@ public partial class Tasks
 
     public DateTime UpdateAt { get; set; }
 
+    [JsonIgnore]
     public virtual Account User { get; set; } = null!;
 }

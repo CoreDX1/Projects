@@ -9,7 +9,6 @@ namespace Api.Controllers;
 [Route("api/[controller]")]
 public class AccountController : Controller
 {
-
     private readonly IAccountService _app;
 
     public AccountController(IAccountService app)
@@ -25,11 +24,26 @@ public class AccountController : Controller
         return response;
     }
 
-
     [HttpPost]
     public async Task<ActionResult> AddAccount([FromBody] AccountDto account)
     {
         var response = await _app.PostRegister(account);
+        return Ok(response);
+    }
+
+    [HttpPost]
+    [Route("Login")]
+    public async Task<ActionResult<Account>> GetAccount([FromBody] AccountDto account)
+    {
+        var response = await _app.LoginUser(account);
+        return Ok(response);
+    }
+
+    [HttpPost]
+    [Route("GetTasks")]
+    public async Task<ActionResult> GetTasks([FromBody] AccountDto account)
+    {
+        var response = await _app.GetTasksByAccount(account);
         return Ok(response);
     }
 }
