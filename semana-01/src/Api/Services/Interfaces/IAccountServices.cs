@@ -6,8 +6,8 @@ namespace Api.Services.Interfaces;
 
 public interface IAccountService
 {
-    public Task<IEnumerable<Account>> GetAll();
+    public Task<IEnumerable<Account>> GetAllAsync();
     public Task<Account> PostRegister(AccountDto account);
-    public Task<Account> LoginUser(AccountDto account);
-    public Task<IEnumerable<TaskReponseDto>> GetTasksByAccount(AccountDto account);
+    public Task<Account> LoginUser(AccountLoginRequestDto account);
+    public Task<IEnumerable<TaskReponseDto>> GetTasksByAccount(AccountLoginRequestDto account);
 }

@@ -16,7 +16,7 @@ public class AccountService : IAccountService
         _db = db;
     }
 
-    public async Task<IEnumerable<Account>> GetAll()
+    public async Task<IEnumerable<Account>> GetAllAsync()
     {
         var account = await _db.Accounts.AsNoTracking().ToListAsync();
         return account;
@@ -38,7 +38,7 @@ public class AccountService : IAccountService
         return newAccount;
     }
 
-    public async Task<Account> LoginUser(AccountDto account)
+    public async Task<Account> LoginUser(AccountLoginRequestDto account)
     {
         var response = await _db.Accounts.FirstAsync(x =>
             x.Email == account.Email && x.Password == account.Password
@@ -46,10 +46,13 @@ public class AccountService : IAccountService
         return response;
     }
 
-    public async Task<IEnumerable<TaskReponseDto>> GetTasksByAccount(AccountDto account)
+    public async Task<IEnumerable<TaskReponseDto>> GetTasksByAccount(AccountLoginRequestDto account)
     {
         var loggedInAccount = await LoginUser(account);
-        var userTask = await _db.Tasks.Where(x => x.UserId == loggedInAccount.UserId).ToListAsync();
+        var userTask = await _db
+            .Tasks.AsNoTracking()
+            .Where(x => x.UserId == loggedInAccount.UserId)
+            .ToListAsync();
 
         var taskReponseDtoList = userTask.Select(task => new TaskReponseDto
         {

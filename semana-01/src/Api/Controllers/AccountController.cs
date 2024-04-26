@@ -1,4 +1,5 @@
 using Api.Models.Dto.Account.Request;
+using Api.Models.Dto.Account.Response.Task;
 using Api.Models.Entities;
 using Api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -16,32 +17,51 @@ public class AccountController : Controller
         _app = app;
     }
 
-    [HttpGet]
-    [Route("GetAll")]
-    public async Task<IEnumerable<Account>> GetAll()
+    /// <summary>
+    /// Get all accounts
+    /// </summary>
+    /// <returns>List of accounts</returns>
+    [HttpGet] // GET: api/Account
+    [Route("accounts", Name = "GetAccount")]
+    [Produces("application/json")]
+    [ProducesDefaultResponseType]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<Account>))]
+    public async Task<IActionResult> GetAccountAsync()
     {
-        var response = await _app.GetAll();
-        return response;
+        IEnumerable<Account> accounts = await _app.GetAllAsync();
+        return StatusCode(200, accounts);
     }
 
     [HttpPost]
+    [Route("Register")]
+    [Produces("application/json")]
+    [ProducesDefaultResponseType]
+    [ProducesResponseType(200, Type = typeof(Account))]
+    [ProducesResponseType(400)]
     public async Task<ActionResult> AddAccount([FromBody] AccountDto account)
     {
         var response = await _app.PostRegister(account);
-        return Ok(response);
+        return StatusCode(200, response);
     }
 
     [HttpPost]
     [Route("Login")]
-    public async Task<ActionResult<Account>> GetAccount([FromBody] AccountDto account)
+    [Produces("application/json")]
+    [ProducesDefaultResponseType]
+    [ProducesResponseType(200, Type = typeof(Account))]
+    [ProducesResponseType(400)]
+    public async Task<IActionResult> PostLogin([FromBody] AccountLoginRequestDto account)
     {
         var response = await _app.LoginUser(account);
-        return Ok(response);
+        return StatusCode(200, response);
     }
 
     [HttpPost]
     [Route("GetTasks")]
-    public async Task<ActionResult> GetTasks([FromBody] AccountDto account)
+    [Produces("application/json")]
+    [ProducesDefaultResponseType]
+    [ProducesResponseType(200, Type = typeof(IEnumerable<TaskReponseDto>))]
+    public async Task<ActionResult> GetTasks([FromBody] AccountLoginRequestDto account)
     {
         var response = await _app.GetTasksByAccount(account);
         return Ok(response);

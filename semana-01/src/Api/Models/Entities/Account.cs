@@ -1,4 +1,6 @@
-﻿namespace Api.Models.Entities;
+﻿using System.Text.Json.Serialization;
+
+namespace Api.Models.Entities;
 
 public partial class Account
 {
@@ -12,5 +14,6 @@ public partial class Account
 
     public DateTime CreateAt { get; set; }
 
+    [JsonIgnore]
     public virtual ICollection<Tasks> TodoTasks { get; set; } = new List<Tasks>();
 }
