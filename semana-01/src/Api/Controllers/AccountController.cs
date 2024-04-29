@@ -1,5 +1,6 @@
 using Api.Models.Dto.Account.Request;
 using Api.Models.Dto.Account.Response.Task;
+using Api.Models.Dto.Task.Request;
 using Api.Models.Entities;
 using Api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -66,4 +67,15 @@ public class AccountController : Controller
         var response = await _app.GetTasksByAccount(account);
         return Ok(response);
     }
+
+    [HttpDelete]
+    [Route("DeleteTask")]
+    [Produces("application/json")]
+    [ProducesDefaultResponseType]
+    public async Task<ActionResult> DeleteTask([FromBody] TaskRequestDto task)
+    {
+        var response = await _app.DeleteTask(task.id);
+        return StatusCode(200, response);
+    }
+
 }

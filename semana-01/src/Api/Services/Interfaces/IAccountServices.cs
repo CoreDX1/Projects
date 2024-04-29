@@ -10,4 +10,5 @@ public interface IAccountService
     public Task<Account> PostRegister(AccountDto account);
     public Task<Account> LoginUser(AccountLoginRequestDto account);
     public Task<IEnumerable<TaskReponseDto>> GetTasksByAccount(AccountLoginRequestDto account);
+    public Task<Tasks> DeleteTask(int id);
 }

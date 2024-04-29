@@ -56,11 +56,28 @@ public class AccountService : IAccountService
 
         var taskReponseDtoList = userTask.Select(task => new TaskReponseDto
         {
+            Id = task.Id,
             Title = task.Title,
             Completed = task.Completed,
             Description = task.Description
         });
 
         return taskReponseDtoList;
+    }
+
+    public async Task<Tasks> DeleteTask(int id)
+    {
+        var task = await _db.Tasks.FindAsync(id);
+
+        if (task == null)
+        {
+            return null!;
+        }
+        else
+        {
+            _db.Tasks.Remove(task);
+            await _db.SaveChangesAsync();
+            return task;
+        }
     }
 }
