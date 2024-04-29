@@ -16,22 +16,14 @@ export class TodoComponent implements OnInit {
 
     public listTasks: Tasks[] = [];
 
-    public userDetails = {
-        email: '',
-        password: '',
-    };
-
     public isLogged: boolean = false;
 
     public account: AccountLoginRequest = {
-        password: 'password123',
-        email: 'johndoe@example.com',
+        password: '',
+        email: '',
     };
 
-    ngOnInit(): void {
-        this.getTasks();
-        this.submitForm();
-    }
+    ngOnInit(): void {}
 
     public getTasks() {
         const tasks = this.taskService
@@ -46,9 +38,5 @@ export class TodoComponent implements OnInit {
         return this.taskService.DeleteTask(id).subscribe(() => {
             this.getTasks();
         });
-    }
-
-    public submitForm() {
-        console.log('Form data:', this.userDetails);
     }
 }

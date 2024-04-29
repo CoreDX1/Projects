@@ -23,8 +23,10 @@
                     </label>
                     <div class="mt-1">
                         <input
+                            name="email"
                             class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                            placeholder="Enter your email address" />
+                            placeholder="Enter your email address"
+                            [(ngModel)]="accountHijo.email" />
                     </div>
                 </div>
 
@@ -42,7 +44,8 @@
                             autocomplete="current-password"
                             required
                             class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                            placeholder="Enter your password" />
+                            placeholder="Enter your password"
+                            [(ngModel)]="accountHijo.password" />
                     </div>
                 </div>
 
@@ -71,6 +74,7 @@
 
                 <div>
                     <button
+                        (click)="getTasks(accountHijo)"
                         type="submit"
                         class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         Sign in
