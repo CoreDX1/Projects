@@ -12,9 +12,7 @@ export class TasksService {
     private urlApi = 'http://localhost:5100/api/Account';
 
     public PostTask(account: AccountLoginRequest): Observable<Tasks[]> {
-        return this.http.post<Tasks[]>(`${this.urlApi}/GetTasks`, {
-            email: account.email,
-            password: account.password,
-        });
+        let task = this.http.post<Tasks[]>(`${this.urlApi}/GetTasks`, account);
+        return task;
     }
 }
