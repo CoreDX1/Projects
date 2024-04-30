@@ -3,7 +3,6 @@ using Api.Models.Dto.Account.Request;
 using Api.Models.Dto.Account.Response.Task;
 using Api.Models.Entities;
 using Api.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace Api.Services;
 
@@ -26,6 +25,8 @@ public class AccountService : IAccountService
         return account;
     }
 
+    /* El método PostRegister crea una nueva cuenta, pero no verifica si la cuenta ya existe.  */
+    /* Podría considerarse agregar una verificación para evitar la creación de cuentas duplicadas. */
     public async Task<Account> PostRegister(AccountDto account)
     {
         Account newAccount =
@@ -41,6 +42,8 @@ public class AccountService : IAccountService
         return newAccount;
     }
 
+    /* El método LoginUser devuelve una cuenta, pero no verifica si la cuenta es válida o no.  */
+    /* Podría considerarse agregar una verificación adicional para asegurarse de que la cuenta es válida antes de devolverla. */
     public async Task<Account> LoginUser(AccountLoginRequestDto account)
     {
         var response = await _accountRepository.GetByEmailAndPasswordAsync(account.Email, account.Password);
