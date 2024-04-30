@@ -9,16 +9,20 @@ namespace Api.Services;
 
 public class AccountService : IAccountService
 {
-    private Semana01Context _db;
+    private readonly Semana01Context _db;
+    private readonly IAccountRepository _accountRepository;
+    private readonly ITaskRepository _taskRepository;
 
-    public AccountService(Semana01Context db)
+    public AccountService(Semana01Context db, IAccountRepository accountRepository, ITaskRepository taskRepository)
     {
         _db = db;
+        _accountRepository = accountRepository;
+        _taskRepository = taskRepository;
     }
 
     public async Task<IEnumerable<Account>> GetAllAsync()
     {
-        var account = await _db.Accounts.AsNoTracking().ToListAsync();
+        var account = await _accountRepository.GetAllAsync();
         return account;
     }
 
@@ -32,29 +36,26 @@ public class AccountService : IAccountService
                 UserName = account.UserName
             };
 
-        await _db.Accounts.AddAsync(newAccount);
-        await _db.SaveChangesAsync();
+        await _accountRepository.AddAsync(newAccount);
 
         return newAccount;
     }
 
     public async Task<Account> LoginUser(AccountLoginRequestDto account)
     {
-        var response = await _db.Accounts.FirstAsync(x =>
-            x.Email == account.Email && x.Password == account.Password
-        );
+        var response = await _accountRepository.GetByEmailAndPasswordAsync(account.Email, account.Password);
         return response;
     }
 
     public async Task<IEnumerable<TaskReponseDto>> GetTasksByAccount(AccountLoginRequestDto account)
     {
-        var loggedInAccount = await LoginUser(account);
-        var userTask = await _db
-            .Tasks.AsNoTracking()
-            .Where(x => x.UserId == loggedInAccount.UserId)
-            .ToListAsync();
 
-        var taskReponseDtoList = userTask.Select(task => new TaskReponseDto
+        var loggetInAccount = await LoginUser(account);
+
+        var userTasks = await _taskRepository.GetByUserIdAsync(loggetInAccount.UserId);
+
+
+        var taskReponseDtoList = userTasks.Select(task => new TaskReponseDto
         {
             Id = task.Id,
             Title = task.Title,
