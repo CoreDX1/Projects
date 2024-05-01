@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Tasks } from '../models/todo';
 import { AccountLoginRequest } from '../models/AccountLoginRequest';
 import { Observable } from 'rxjs';
+import { ApiResponse } from '../models/ApiResponse';
 
 @Injectable({
     providedIn: 'root',
@@ -11,8 +12,13 @@ export class TasksService {
     private http = inject(HttpClient);
     private urlApi = 'http://localhost:5100/api/Account';
 
-    public PostTask(account: AccountLoginRequest): Observable<Tasks[]> {
-        let task = this.http.post<Tasks[]>(`${this.urlApi}/GetTasks`, account);
+    public PostTask(
+        account: AccountLoginRequest
+    ): Observable<ApiResponse<Tasks[]>> {
+        let task = this.http.post<ApiResponse<Tasks[]>>(
+            `${this.urlApi}/gettasks`,
+            account
+        );
         return task;
     }
 

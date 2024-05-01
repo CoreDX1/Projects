@@ -2,8 +2,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { TasksService } from '../../services/tasks.service';
 import { AccountLoginRequest } from '../../models/AccountLoginRequest';
 import { Tasks } from '../../models/todo';
-import { catchError } from 'rxjs';
 import { LoginComponent } from '../login/login.component';
+import { ApiResponse } from '../../models/ApiResponse';
 
 @Component({
     selector: 'app-todo',
@@ -14,22 +14,30 @@ import { LoginComponent } from '../login/login.component';
 export class TodoComponent implements OnInit {
     private taskService = inject(TasksService);
 
-    public listTasks: Tasks[] = [];
+    public listTasks: ApiResponse<Array<Tasks>> = {
+        data: [],
+        IsSuccess: false,
+        statuCode: 0,
+        message: '',
+    };
+
+    public account: AccountLoginRequest = {
+        password: 'password123',
+        email: 'johndoe@example.com',
+    };
 
     public isLogged: boolean = false;
 
-    public account: AccountLoginRequest = {
-        password: '',
-        email: '',
-    };
-
-    ngOnInit(): void {}
+    ngOnInit(): void {
+        this.getTasks();
+    }
 
     public getTasks() {
         const tasks = this.taskService
             .PostTask(this.account)
             .subscribe(task => {
                 this.listTasks = task;
+                this.isLogged = true;
             });
         return tasks;
     }

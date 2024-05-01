@@ -90,7 +90,7 @@
         <span class="text-red-500 text-xs block mt-2">Error</span>
     </div>
     <div id="todos-list">
-        @for (item of listTasks; track item.id) {
+        @for (item of listTasks.data; track item.id) {
         <div
             class="todo mb-5 card px-5 py-6 bg-white col-span-1 border-t-2 border-blue-500 hover:shadow">
             <div class="flex justify-between space-x-2">
@@ -121,7 +121,6 @@
                         </svg>
                     </button>
                     <button
-                        (click)="DeleteTask(item.id)"
                         class="text-sm text-red-500 font-semibold rounded hover:text-teal-800 mr-1">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
