@@ -10,6 +10,8 @@ builder.Services.AddTransient<IAccountService, AccountService>();
 builder.Services.AddTransient<ITaskRepository, TaskRepository>();
 builder.Services.AddTransient<IAccountRepository, AccountRepository>();
 
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

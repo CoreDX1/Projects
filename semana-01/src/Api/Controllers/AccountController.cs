@@ -21,14 +21,13 @@ public class AccountController : Controller
     /// Get all accounts
     /// </summary>
     /// <returns>List of accounts</returns>
-    [HttpGet] // GET: api/Account
-    [Route("accounts", Name = "GetAccount")]
+    [HttpGet("accounts")] // GET: api/Account
     [Produces("application/json")]
     [ProducesDefaultResponseType]
     [ProducesResponseType(200, Type = typeof(IEnumerable<Account>))]
     public async Task<IActionResult> GetAccountAsync()
     {
-        IEnumerable<Account> accounts = await _app.GetAllAsync();
+        var accounts = await _app.GetAllAsync();
         return StatusCode(200, accounts);
     }
 

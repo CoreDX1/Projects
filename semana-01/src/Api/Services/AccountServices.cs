@@ -1,4 +1,5 @@
 using Api.Data;
+using Api.Models.BaseResponses;
 using Api.Models.Domain.Entities;
 using Api.Models.Domain.Interfaces;
 using Api.Models.Dto.Account;
@@ -11,21 +12,26 @@ public class AccountService : IAccountService
     private readonly IAccountRepository _accountRepository;
     private readonly ITaskRepository _taskRepository;
 
-    public AccountService(
-        Semana01Context db,
-        IAccountRepository accountRepository,
-        ITaskRepository taskRepository
-    )
+    public AccountService(Semana01Context db, IAccountRepository accountRepository, ITaskRepository taskRepository)
     {
         _db = db;
         _accountRepository = accountRepository;
         _taskRepository = taskRepository;
     }
 
-    public async Task<IEnumerable<Account>> GetAllAsync()
+    public async Task<ApiResponse<IEnumerable<Account>>> GetAllAsync()
     {
         var account = await _accountRepository.GetAllAsync();
-        return account;
+
+        var response = new ApiResponse<IEnumerable<Account>>()
+        {
+            Data = account,
+            Message = "Cuentas encontradas",
+            IsSuccess = true,
+            StatusCode = StatusCodes.Status200OK
+        };
+
+        return response;
     }
 
     /* El método PostRegister crea una nueva cuenta, pero no verifica si la cuenta ya existe.  */
@@ -45,22 +51,46 @@ public class AccountService : IAccountService
         return newAccount;
     }
 
-    /* El método LoginUser devuelve una cuenta, pero no verifica si la cuenta es válida o no.  */
-    /* Podría considerarse agregar una verificación adicional para asegurarse de que la cuenta es válida antes de devolverla. */
-    public async Task<Account> LoginUser(AccountLoginRequestDto account)
+    public async Task<ApiResponse<Account>> LoginUser(AccountLoginRequestDto account)
     {
-        var response = await _accountRepository.GetByEmailAndPasswordAsync(
-            account.Email,
-            account.Password
-        );
+        var response = new ApiResponse<Account>();
+
+        var mapperAcount = new Account() { Password = account.Password, Email = account.Email };
+
+        var loggetInAccount = await _accountRepository.GetByEmailAndPasswordAsync(mapperAcount);
+
+        if (loggetInAccount == null)
+        {
+            response.IsSuccess = false;
+            response.StatusCode = StatusCodes.Status401Unauthorized;
+            response.Message = "Credenciales incorrectas";
+            response.Data = null;
+        }
+        else
+        {
+            response.IsSuccess = true;
+            response.StatusCode = StatusCodes.Status200OK;
+            response.Message = "Credenciales correctas";
+            response.Data = loggetInAccount;
+        }
         return response;
     }
 
-    public async Task<IEnumerable<TaskReponseDto>> GetTasksByAccount(AccountLoginRequestDto account)
+    public async Task<ApiResponse<IEnumerable<TaskReponseDto>>> GetTasksByAccount(AccountLoginRequestDto account)
     {
+        var response = new ApiResponse<IEnumerable<TaskReponseDto>>();
         var loggetInAccount = await LoginUser(account);
 
-        var userTasks = await _taskRepository.GetByUserIdAsync(loggetInAccount.UserId);
+        if (!loggetInAccount.IsSuccess)
+        {
+            response.IsSuccess = false;
+            response.Message = loggetInAccount.Message;
+            response.Data = null;
+
+            return response;
+        }
+
+        var userTasks = await _taskRepository.GetByUserIdAsync(loggetInAccount.Data!.UserId);
 
         var taskReponseDtoList = userTasks.Select(task => new TaskReponseDto
         {
@@ -70,7 +100,12 @@ public class AccountService : IAccountService
             Description = task.Description
         });
 
-        return taskReponseDtoList;
+        response.IsSuccess = true;
+        response.StatusCode = StatusCodes.Status200OK;
+        response.Message = "Tareas encontradas";
+        response.Data = taskReponseDtoList;
+
+        return response;
     }
 
     public async Task<Tasks> DeleteTask(int id)

@@ -5,6 +5,6 @@ namespace Api.Models.Domain.Interfaces;
 public interface IAccountRepository
 {
     Task<IEnumerable<Account>> GetAllAsync();
-    Task<Account> GetByEmailAndPasswordAsync(string email, string password);
+    Task<Account?> GetByEmailAndPasswordAsync(Account account);
     Task AddAsync(Account account);
 }
