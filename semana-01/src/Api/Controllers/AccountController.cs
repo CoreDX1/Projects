@@ -1,8 +1,7 @@
-using Api.Models.Dto.Account.Request;
-using Api.Models.Dto.Account.Response.Task;
-using Api.Models.Dto.Task.Request;
-using Api.Models.Entities;
-using Api.Services.Interfaces;
+using Api.Models.Domain.Entities;
+using Api.Models.Domain.Interfaces;
+using Api.Models.Dto.Account;
+using Api.Models.Dto.Task;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -77,5 +76,4 @@ public class AccountController : Controller
         var response = await _app.DeleteTask(task.id);
         return StatusCode(200, response);
     }
-
 }

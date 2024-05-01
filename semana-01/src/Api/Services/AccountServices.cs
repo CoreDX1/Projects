@@ -1,8 +1,7 @@
 using Api.Data;
-using Api.Models.Dto.Account.Request;
-using Api.Models.Dto.Account.Response.Task;
-using Api.Models.Entities;
-using Api.Services.Interfaces;
+using Api.Models.Domain.Entities;
+using Api.Models.Domain.Interfaces;
+using Api.Models.Dto.Account;
 
 namespace Api.Services;
 
@@ -12,7 +11,11 @@ public class AccountService : IAccountService
     private readonly IAccountRepository _accountRepository;
     private readonly ITaskRepository _taskRepository;
 
-    public AccountService(Semana01Context db, IAccountRepository accountRepository, ITaskRepository taskRepository)
+    public AccountService(
+        Semana01Context db,
+        IAccountRepository accountRepository,
+        ITaskRepository taskRepository
+    )
     {
         _db = db;
         _accountRepository = accountRepository;
@@ -46,17 +49,18 @@ public class AccountService : IAccountService
     /* Podría considerarse agregar una verificación adicional para asegurarse de que la cuenta es válida antes de devolverla. */
     public async Task<Account> LoginUser(AccountLoginRequestDto account)
     {
-        var response = await _accountRepository.GetByEmailAndPasswordAsync(account.Email, account.Password);
+        var response = await _accountRepository.GetByEmailAndPasswordAsync(
+            account.Email,
+            account.Password
+        );
         return response;
     }
 
     public async Task<IEnumerable<TaskReponseDto>> GetTasksByAccount(AccountLoginRequestDto account)
     {
-
         var loggetInAccount = await LoginUser(account);
 
         var userTasks = await _taskRepository.GetByUserIdAsync(loggetInAccount.UserId);
-
 
         var taskReponseDtoList = userTasks.Select(task => new TaskReponseDto
         {

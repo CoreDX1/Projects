@@ -1,8 +1,7 @@
-using Api.Models.Dto.Account.Request;
-using Api.Models.Dto.Account.Response.Task;
-using Api.Models.Entities;
+using Api.Models.Domain.Entities;
+using Api.Models.Dto.Account;
 
-namespace Api.Services.Interfaces;
+namespace Api.Models.Domain.Interfaces;
 
 public interface IAccountService
 {

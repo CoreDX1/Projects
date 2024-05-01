@@ -1,7 +1,6 @@
-
 using System.ComponentModel.DataAnnotations;
 
-namespace Api.Models.Dto.Account.Request;
+namespace Api.Models.Dto.Account;
 
 public class AccountDto
 {

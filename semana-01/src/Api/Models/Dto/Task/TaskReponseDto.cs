@@ -1,4 +1,4 @@
-namespace Api.Models.Dto.Account.Response.Task;
+namespace Api.Models.Dto.Account;
 
 public class TaskReponseDto
 {

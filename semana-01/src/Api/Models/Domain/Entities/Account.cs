@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Api.Models.Entities;
+namespace Api.Models.Domain.Entities;
 
 public partial class Account
 {

@@ -1,6 +1,6 @@
 using Api.Data;
+using Api.Models.Domain.Interfaces;
 using Api.Services;
-using Api.Services.Interfaces;
 using Api.Services.Repository;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,16 +22,17 @@ builder.Services.AddDbContext<Semana01Context>(options =>
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
-
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: MyAllowSpecificOrigins,
-                      builder =>
-                      {
-                          builder.WithOrigins("*");
-                          builder.AllowAnyHeader();
-                          builder.WithMethods("*");
-                      });
+    options.AddPolicy(
+        name: MyAllowSpecificOrigins,
+        builder =>
+        {
+            builder.WithOrigins("*");
+            builder.AllowAnyHeader();
+            builder.WithMethods("*");
+        }
+    );
 });
 
 var app = builder.Build();

@@ -1,6 +1,6 @@
 using Api.Data;
-using Api.Models.Entities;
-using Api.Services.Interfaces;
+using Api.Models.Domain.Entities;
+using Api.Models.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.Services.Repository;
@@ -21,7 +21,9 @@ public class AccountRepository : IAccountRepository
 
     public async Task<Account> GetByEmailAndPasswordAsync(string email, string password)
     {
-        return await _db.Accounts.FirstOrDefaultAsync(x => x.Email == email && x.Password == password);
+        return await _db.Accounts.FirstOrDefaultAsync(x =>
+            x.Email == email && x.Password == password
+        );
     }
 
     public async Task AddAsync(Account account)

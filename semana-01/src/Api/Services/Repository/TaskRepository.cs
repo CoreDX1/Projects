@@ -1,6 +1,6 @@
 using Api.Data;
-using Api.Models.Entities;
-using Api.Services.Interfaces;
+using Api.Models.Domain.Entities;
+using Api.Models.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.Services.Repository;

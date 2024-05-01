@@ -1,6 +1,6 @@
-using Api.Models.Entities;
+using Api.Models.Domain.Entities;
 
-namespace Api.Services.Interfaces;
+namespace Api.Models.Domain.Interfaces;
 
 public interface IAccountRepository
 {
