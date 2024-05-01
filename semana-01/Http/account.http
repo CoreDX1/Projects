@@ -28,3 +28,12 @@ content-type: application/json
 }
 
 ### 
+
+POST {{host}}/api/account/register
+content-type: application/json
+
+{
+    "username": "christian",
+    "password": "index",
+    "email": "christian@gmail.com"
+}

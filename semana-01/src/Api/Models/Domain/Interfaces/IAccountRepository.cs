@@ -6,5 +6,5 @@ public interface IAccountRepository
 {
     Task<IEnumerable<Account>> GetAllAsync();
     Task<Account?> GetByEmailAndPasswordAsync(Account account);
-    Task AddAsync(Account account);
+    Task<bool> AddAsync(Account account);
 }

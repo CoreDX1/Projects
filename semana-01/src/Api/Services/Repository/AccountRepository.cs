@@ -1,7 +1,6 @@
 using Api.Data;
 using Api.Models.Domain.Entities;
 using Api.Models.Domain.Interfaces;
-using Api.Models.Dto.Account;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.Services.Repository;
@@ -27,9 +26,16 @@ public class AccountRepository : IAccountRepository
         return foundAccount;
     }
 
-    public async Task AddAsync(Account account)
+    public async Task<bool> AddAsync(Account account)
     {
+        var accountExists = await _db.Accounts.AnyAsync(x => x.Email == account.Email);
+
+        if (accountExists)
+            return false;
+
         await _db.Accounts.AddAsync(account);
         await _db.SaveChangesAsync();
+
+        return true;
     }
 }

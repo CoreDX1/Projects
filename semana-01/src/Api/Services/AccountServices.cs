@@ -34,10 +34,10 @@ public class AccountService : IAccountService
         return response;
     }
 
-    /* El método PostRegister crea una nueva cuenta, pero no verifica si la cuenta ya existe.  */
-    /* Podría considerarse agregar una verificación para evitar la creación de cuentas duplicadas. */
-    public async Task<Account> PostRegister(AccountDto account)
+    public async Task<ApiResponse<Account>> PostRegister(AccountDto account)
     {
+        var response = new ApiResponse<Account>();
+
         Account newAccount =
             new()
             {
@@ -46,9 +46,22 @@ public class AccountService : IAccountService
                 UserName = account.UserName
             };
 
-        await _accountRepository.AddAsync(newAccount);
+        var addAccount = await _accountRepository.AddAsync(newAccount);
 
-        return newAccount;
+        if (!addAccount)
+        {
+            response.IsSuccess = false;
+            response.StatusCode = StatusCodes.Status400BadRequest;
+            response.Message = "Cuenta ya existe";
+        }
+        else
+        {
+            response.IsSuccess = true;
+            response.StatusCode = StatusCodes.Status200OK;
+            response.Message = "Cuenta creada";
+        }
+
+        return response;
     }
 
     public async Task<ApiResponse<Account>> LoginUser(AccountLoginRequestDto account)
@@ -114,7 +127,7 @@ public class AccountService : IAccountService
 
         if (task == null)
         {
-            return null!;
+            return new Tasks();
         }
         else
         {
