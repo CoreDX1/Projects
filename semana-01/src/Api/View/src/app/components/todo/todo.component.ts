@@ -22,8 +22,8 @@ export class TodoComponent implements OnInit {
     };
 
     public account: AccountLoginRequest = {
-        password: 'password123',
-        email: 'johndoe@example.com',
+        password: '',
+        email: '',
     };
 
     public isLogged: boolean = false;
@@ -37,7 +37,9 @@ export class TodoComponent implements OnInit {
             .PostTask(this.account)
             .subscribe(task => {
                 this.listTasks = task;
-                this.isLogged = true;
+                if (this.listTasks.IsSuccess) {
+                    this.isLogged = true;
+                }
             });
         return tasks;
     }

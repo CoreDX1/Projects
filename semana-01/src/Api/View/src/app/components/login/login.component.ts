@@ -12,7 +12,7 @@ import { ApiResponse } from '../../models/ApiResponse';
     templateUrl: './login.component.html',
 })
 export class LoginComponent {
-    @Input() accountHijo = {
+    @Input() accountHijo: AccountLoginRequest = {
         email: '',
         password: '',
     };
@@ -26,14 +26,14 @@ export class LoginComponent {
         message: '',
     };
 
-    public getTasks(accountLogin: AccountLoginRequest) {
+    Login() {
         const tasks = this.taskService
-            .PostTask(accountLogin)
+            .PostTask(this.accountHijo)
             .subscribe(task => {
                 this.listTasks = task;
+                if (this.listTasks.IsSuccess) {
+                }
             });
-
-        console.log(this.listTasks);
         return tasks;
     }
 }
