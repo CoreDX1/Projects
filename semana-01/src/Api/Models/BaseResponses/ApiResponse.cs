@@ -1,4 +1,5 @@
 using Api.Models.Domain.Entities;
+using Api.Models.Dto.Account;
 
 namespace Api.Models.BaseResponses;
 
@@ -9,6 +10,19 @@ public class ApiResponse
     public string? Message { get; set; }
 }
 
+public class ApiResponse<T> : ApiResponse
+{
+    public T? Data { get; set; }
+}
+
+
+/// Login
+public class Data
+{
+    public Account User { get; set; } = new Account();
+    public IEnumerable<TaskReponseDto>? Lists { get; set; } = new List<TaskReponseDto>();
+}
+
 public class Meta
 {
     public int StatusCode { get; set; }
@@ -17,19 +31,10 @@ public class Meta
 
 public class LoginResponse
 {
-    public Meta Meta { get; set; } = null!;
-    public Account User { get; set; } = null!;
+    public Meta Meta { get; set; } = new Meta();
+    public Data Data { get; set; } = new Data();
 }
-
-
-public class LoginResponse<T> : LoginResponse
-{
-    public T? Data { get; set; }
-}
+///
 
 
 
-public class ApiResponse<T> : ApiResponse
-{
-    public T? Data { get; set; }
-}

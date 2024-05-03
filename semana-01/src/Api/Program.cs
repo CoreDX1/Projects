@@ -16,8 +16,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddControllers();
-
 builder.Services.AddDbContext<Semana01Context>(options =>
+
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("StringConnection"));
 });

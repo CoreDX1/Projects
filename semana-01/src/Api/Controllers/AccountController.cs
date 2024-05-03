@@ -59,7 +59,6 @@ public class AccountController : Controller
     [Route("GetTasks")]
     [Produces("application/json")]
     [ProducesDefaultResponseType]
-    [ProducesResponseType(200, Type = typeof(IEnumerable<TaskReponseDto>))]
     public async Task<ActionResult> GetTasks([FromBody] AccountLoginRequestDto account)
     {
         var response = await _app.GetTasksByAccount(account);

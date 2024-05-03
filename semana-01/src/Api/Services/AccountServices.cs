@@ -89,17 +89,18 @@ public class AccountService : IAccountService
         return response;
     }
 
-    public async Task<ApiResponse<IEnumerable<TaskReponseDto>>> GetTasksByAccount(AccountLoginRequestDto account)
+    public async Task<LoginResponse> GetTasksByAccount(AccountLoginRequestDto account)
     {
-        var response = new ApiResponse<IEnumerable<TaskReponseDto>>();
+        var response = new LoginResponse();
 
         var loggetInAccount = await LoginUser(account);
 
+
         if (!loggetInAccount.IsSuccess)
         {
-            response.IsSuccess = false;
-            response.Message = loggetInAccount.Message;
-            response.Data = null;
+
+            response.Meta.StatusCode = 200;
+            response.Meta.Message = "Error al buscar tareas";
 
             return response;
         }
@@ -114,10 +115,11 @@ public class AccountService : IAccountService
             Description = task.Description
         });
 
-        response.IsSuccess = true;
-        response.StatusCode = StatusCodes.Status200OK;
-        response.Message = "Tareas encontradas";
-        response.Data = taskReponseDtoList;
+        response.Meta.StatusCode = 200;
+        response.Meta.Message = "Tareas encontradas";
+        response.Data.User = loggetInAccount.Data;
+        response.Data.Lists = taskReponseDtoList;
+
 
         return response;
     }
