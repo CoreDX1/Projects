@@ -1,3 +1,4 @@
+@if(!isLogged){
 <div
     class="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
@@ -34,7 +35,7 @@
                             name="email"
                             class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                             placeholder="Enter your email address"
-                            [(ngModel)]="accountHijo.email" />
+                            [(ngModel)]="account.email" />
                     </div>
                 </div>
 
@@ -54,7 +55,7 @@
                             required
                             class="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                             placeholder="Enter your password"
-                            [(ngModel)]="accountHijo.password" />
+                            [(ngModel)]="account.password" />
                     </div>
                 </div>
 
@@ -92,3 +93,6 @@
         </div>
     </div>
 </div>
+}@else {
+<app-todo [listTasks]="listTasks"></app-todo>
+}

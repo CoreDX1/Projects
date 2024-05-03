@@ -4,36 +4,41 @@ import { TasksService } from '../../services/tasks.service';
 import { Tasks } from '../../models/todo';
 import { AccountLoginRequest } from '../../models/AccountLoginRequest';
 import { ApiResponse } from '../../models/ApiResponse';
+import { TodoComponent } from '../todo/todo.component';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [FormsModule],
+    imports: [FormsModule, TodoComponent],
     templateUrl: './login.component.html',
 })
 export class LoginComponent {
-    @Input() accountHijo: AccountLoginRequest = {
-        email: '',
-        password: '',
-    };
-
-    private taskService = inject(TasksService);
-
-    public listTasks: ApiResponse<Array<Tasks>> = {
+    listTasks: ApiResponse<Array<Tasks>> = {
         data: [],
         IsSuccess: false,
         statuCode: 0,
         message: '',
     };
 
-    Login() {
-        const tasks = this.taskService
-            .PostTask(this.accountHijo)
-            .subscribe(task => {
-                this.listTasks = task;
-                if (this.listTasks.IsSuccess) {
-                }
-            });
+    isLogged = false;
+
+    account: AccountLoginRequest = {
+        password: '',
+        email: '',
+    };
+
+    private taskService = inject(TasksService);
+
+    async Login() {
+        const tasks = this.taskService.PostTask(this.account);
+
+        this.listTasks = await lastValueFrom(tasks);
+
+        if (this.listTasks.data.length > 0) {
+            this.isLogged = true;
+        }
+
         return tasks;
     }
 }

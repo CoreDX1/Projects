@@ -12,10 +12,8 @@ export class TasksService {
     private http = inject(HttpClient);
     private urlApi = 'http://localhost:5100/api/Account';
 
-    public PostTask(
-        account: AccountLoginRequest
-    ): Observable<ApiResponse<Tasks[]>> {
-        let task = this.http.post<ApiResponse<Tasks[]>>(
+    PostTask(account: AccountLoginRequest) {
+        const task = this.http.post<ApiResponse<Tasks[]>>(
             `${this.urlApi}/gettasks`,
             account
         );
