@@ -1,6 +1,6 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
-import { Tasks } from '../../models/todo';
-import { ApiResponse } from '../../models/ApiResponse';
+import { Component, Input, inject } from '@angular/core';
+import { ApiResponse, Data } from '../../models/ApiResponse';
+import { TasksService } from '../../services/tasks.service';
 
 @Component({
     selector: 'app-todo',
@@ -9,10 +9,32 @@ import { ApiResponse } from '../../models/ApiResponse';
     templateUrl: './todo.component.html',
 })
 export class TodoComponent {
-    @Input() public listTasks: ApiResponse<Array<Tasks>> = {
-        data: [],
-        IsSuccess: false,
-        statuCode: 0,
-        message: '',
+    private taskService = inject(TasksService);
+
+    @Input() public listTasks: ApiResponse<Data> = {
+        data: {
+            lists: [],
+            user: {
+                createAt: '',
+                email: '',
+                password: '',
+                userId: 0,
+                userName: '',
+            },
+        },
+        meta: {
+            message: '',
+            statusCode: 0,
+        },
     };
+
+    DeleteTaskId(id: number) {
+        this.taskService.DeleteTask(id).subscribe();
+
+        this.listTasks.data.lists = this.listTasks.data.lists.filter(
+            item => item.id !== id
+        );
+
+        return this.listTasks;
+    }
 }

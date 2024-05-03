@@ -29,7 +29,7 @@ public class Meta
     public string? Message { get; set; }
 }
 
-public class LoginResponse
+public record LoginResponse
 {
     public Meta Meta { get; set; } = new Meta();
     public Data Data { get; set; } = new Data();

@@ -1,9 +1,8 @@
-import { Component, Input, inject, input } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TasksService } from '../../services/tasks.service';
-import { Tasks } from '../../models/todo';
 import { AccountLoginRequest } from '../../models/AccountLoginRequest';
-import { ApiResponse } from '../../models/ApiResponse';
+import { ApiResponse, Data } from '../../models/ApiResponse';
 import { TodoComponent } from '../todo/todo.component';
 import { lastValueFrom } from 'rxjs';
 
@@ -14,11 +13,21 @@ import { lastValueFrom } from 'rxjs';
     templateUrl: './login.component.html',
 })
 export class LoginComponent {
-    listTasks: ApiResponse<Array<Tasks>> = {
-        data: [],
-        IsSuccess: false,
-        statuCode: 0,
-        message: '',
+    listTasks: ApiResponse<Data> = {
+        data: {
+            lists: [],
+            user: {
+                createAt: '',
+                email: '',
+                password: '',
+                userId: 0,
+                userName: '',
+            },
+        },
+        meta: {
+            message: '',
+            statusCode: 0,
+        },
     };
 
     isLogged = false;
@@ -35,7 +44,7 @@ export class LoginComponent {
 
         this.listTasks = await lastValueFrom(tasks);
 
-        if (this.listTasks.data.length > 0) {
+        if (this.listTasks.meta.statusCode == 200) {
             this.isLogged = true;
         }
 

@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Tasks } from '../models/todo';
 import { AccountLoginRequest } from '../models/AccountLoginRequest';
 import { Observable } from 'rxjs';
-import { ApiResponse } from '../models/ApiResponse';
+import { ApiResponse, Data } from '../models/ApiResponse';
 
 @Injectable({
     providedIn: 'root',
@@ -13,7 +13,7 @@ export class TasksService {
     private urlApi = 'http://localhost:5100/api/Account';
 
     PostTask(account: AccountLoginRequest) {
-        const task = this.http.post<ApiResponse<Tasks[]>>(
+        const task = this.http.post<ApiResponse<Data>>(
             `${this.urlApi}/gettasks`,
             account
         );

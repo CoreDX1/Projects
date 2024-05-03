@@ -98,7 +98,6 @@ public class AccountService : IAccountService
 
         if (!loggetInAccount.IsSuccess)
         {
-
             response.Meta.StatusCode = 200;
             response.Meta.Message = "Error al buscar tareas";
 
