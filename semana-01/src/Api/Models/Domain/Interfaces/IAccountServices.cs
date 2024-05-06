@@ -6,8 +6,8 @@ namespace Api.Models.Domain.Interfaces;
 
 public interface IAccountService
 {
-    public Task<ApiResponse<IEnumerable<Account>>> GetAllAsync();
-    public Task<ApiResponse<Account>> PostRegister(AccountDto account);
+    public Task<ApiResponse<IEnumerable<AccountResponseDto>>> GetAllAsync();
+    public Task<ApiResponse<Account>> PostRegister(AccountResponseDto account);
     public Task<ApiResponse<Account>> LoginUser(AccountLoginRequestDto account);
     public Task<LoginResponse> GetTasksByAccount(AccountLoginRequestDto account);
     public Task<Tasks> DeleteTask(int id);

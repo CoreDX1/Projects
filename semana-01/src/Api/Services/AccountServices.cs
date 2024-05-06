@@ -3,6 +3,7 @@ using Api.Models.BaseResponses;
 using Api.Models.Domain.Entities;
 using Api.Models.Domain.Interfaces;
 using Api.Models.Dto.Account;
+using AutoMapper;
 
 namespace Api.Services;
 
@@ -11,40 +12,36 @@ public class AccountService : IAccountService
     private readonly Semana01Context _db;
     private readonly IAccountRepository _accountRepository;
     private readonly ITaskRepository _taskRepository;
+    private readonly IMapper _mapper;
 
-    public AccountService(Semana01Context db, IAccountRepository accountRepository, ITaskRepository taskRepository)
+    public AccountService(Semana01Context db, IAccountRepository accountRepository, ITaskRepository taskRepository, IMapper mapper)
     {
         _db = db;
         _accountRepository = accountRepository;
         _taskRepository = taskRepository;
+        _mapper = mapper;
     }
 
-    public async Task<ApiResponse<IEnumerable<Account>>> GetAllAsync()
+    public async Task<ApiResponse<IEnumerable<AccountResponseDto>>> GetAllAsync()
     {
         var account = await _accountRepository.GetAllAsync();
 
-        var response = new ApiResponse<IEnumerable<Account>>()
+        var response = new ApiResponse<IEnumerable<AccountResponseDto>>()
         {
-            Data = account,
-            Message = "Cuentas encontradas",
+            Data = _mapper.Map<IEnumerable<AccountResponseDto>>(account),
             IsSuccess = true,
+            Message = "Cuentas encontradas",
             StatusCode = StatusCodes.Status200OK
         };
 
         return response;
     }
 
-    public async Task<ApiResponse<Account>> PostRegister(AccountDto account)
+    public async Task<ApiResponse<Account>> PostRegister(AccountResponseDto account)
     {
         var response = new ApiResponse<Account>();
 
-        Account newAccount =
-            new()
-            {
-                Email = account.Email,
-                Password = account.Password,
-                UserName = account.UserName
-            };
+        Account newAccount = _mapper.Map<Account>(account);
 
         var addAccount = await _accountRepository.AddAsync(newAccount);
 
@@ -95,7 +92,6 @@ public class AccountService : IAccountService
 
         var loggetInAccount = await LoginUser(account);
 
-
         if (!loggetInAccount.IsSuccess)
         {
             response.Meta.StatusCode = 200;
@@ -106,19 +102,10 @@ public class AccountService : IAccountService
 
         var userTasks = await _taskRepository.GetByUserIdAsync(loggetInAccount.Data!.UserId);
 
-        var taskReponseDtoList = userTasks.Select(task => new TaskReponseDto
-        {
-            Id = task.Id,
-            Title = task.Title,
-            Completed = task.Completed,
-            Description = task.Description
-        });
-
         response.Meta.StatusCode = 200;
         response.Meta.Message = "Tareas encontradas";
         response.Data.User = loggetInAccount.Data;
-        response.Data.Lists = taskReponseDtoList;
-
+        response.Data.Lists = _mapper.Map<IEnumerable<TaskReponseDto>>(userTasks);
 
         return response;
     }

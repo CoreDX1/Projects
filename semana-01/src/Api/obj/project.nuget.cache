@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "KYkE2GkooAxVDcB0l2Zw8QgYMNE4SjWV40CkGag8M0KylL+crQmf9Gcl19WlqajXxii9nLenjsnXTUt6vXUk1A==",
+  "dgSpecHash": "VERnyKjGxab2LqpQ12Tx2keKSdc3i48c7+ASvQOJwruAXb5Xe6e/p4V8mXLlcezbSrXQTw47NK8zhzdp5hxItA==",
   "success": true,
   "projectFilePath": "/home/core/Desktop/Projects/semana-01/src/Api/Api.csproj",
   "expectedPackageFiles": [
+    "/home/core/.nuget/packages/automapper/13.0.1/automapper.13.0.1.nupkg.sha512",
     "/home/core/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/home/core/.nuget/packages/microsoft.aspnetcore.openapi/8.0.3/microsoft.aspnetcore.openapi.8.0.3.nupkg.sha512",
     "/home/core/.nuget/packages/microsoft.bcl.asyncinterfaces/6.0.0/microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",

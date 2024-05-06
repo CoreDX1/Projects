@@ -37,7 +37,7 @@ public class AccountController : Controller
     [ProducesDefaultResponseType]
     [ProducesResponseType(200, Type = typeof(Account))]
     [ProducesResponseType(400)]
-    public async Task<ActionResult> AddAccount([FromBody] AccountDto account)
+    public async Task<ActionResult> AddAccount([FromBody] AccountResponseDto account)
     {
         var response = await _app.PostRegister(account);
         return StatusCode(200, response);
