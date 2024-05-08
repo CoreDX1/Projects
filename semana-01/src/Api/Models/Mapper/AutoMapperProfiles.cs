@@ -10,5 +10,6 @@ public class AutoMapperProfiles : Profile
     {
         CreateMap<Account, AccountResponseDto>().ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.UserId));
         CreateMap<Tasks, TaskReponseDto>();
+        CreateMap<AccountLoginRequestDto, Account>();
     }
 }

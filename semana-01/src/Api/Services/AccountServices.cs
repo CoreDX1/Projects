@@ -3,6 +3,7 @@ using Api.Models.BaseResponses;
 using Api.Models.Domain.Entities;
 using Api.Models.Domain.Interfaces;
 using Api.Models.Dto.Account;
+using Api.Validation;
 using AutoMapper;
 
 namespace Api.Services;
@@ -13,13 +14,15 @@ public class AccountService : IAccountService
     private readonly IAccountRepository _accountRepository;
     private readonly ITaskRepository _taskRepository;
     private readonly IMapper _mapper;
+    private readonly AccountValidation _accountValidation;
 
-    public AccountService(Semana01Context db, IAccountRepository accountRepository, ITaskRepository taskRepository, IMapper mapper)
+    public AccountService(Semana01Context db, IAccountRepository accountRepository, ITaskRepository taskRepository, IMapper mapper, AccountValidation accountValidation)
     {
         _db = db;
         _accountRepository = accountRepository;
         _taskRepository = taskRepository;
         _mapper = mapper;
+        _accountValidation = accountValidation;
     }
 
     public async Task<ApiResponse<IEnumerable<AccountResponseDto>>> GetAllAsync()
@@ -37,13 +40,13 @@ public class AccountService : IAccountService
         return response;
     }
 
-    public async Task<ApiResponse<Account>> PostRegister(AccountResponseDto account)
+    public async Task<ApiResponse<Account>> PostRegister(AccountResponseDto loginRequest)
     {
         var response = new ApiResponse<Account>();
 
-        Account newAccount = _mapper.Map<Account>(account);
+        var account = _mapper.Map<Account>(loginRequest);
 
-        var addAccount = await _accountRepository.AddAsync(newAccount);
+        var addAccount = await _accountRepository.AddAsync(account);
 
         if (!addAccount)
         {
@@ -61,13 +64,37 @@ public class AccountService : IAccountService
         return response;
     }
 
-    public async Task<ApiResponse<Account>> LoginUser(AccountLoginRequestDto account)
+    public async Task<ApiResponse<Account>> LoginUser(AccountLoginRequestDto loginRequest)
     {
         var response = new ApiResponse<Account>();
 
-        var mapperAcount = new Account() { Password = account.Password, Email = account.Email };
+        var erros = new Dictionary<string, List<string>>();
 
-        var loggetInAccount = await _accountRepository.GetByEmailAndPasswordAsync(mapperAcount);
+        var validationResult = await _accountValidation.ValidateAsync(loginRequest);
+
+        foreach (var error in validationResult.Errors)
+        {
+            if (!erros.ContainsKey(error.PropertyName))
+            {
+                erros.Add(error.PropertyName, new List<string> { error.ErrorMessage });
+            }
+            else
+            {
+                erros[error.PropertyName].Add(error.ErrorMessage);
+            }
+        }
+
+        if (!validationResult.IsValid)
+        {
+            response.IsSuccess = false;
+            response.StatusCode = StatusCodes.Status400BadRequest;
+            response.Message = "Error de validacion";
+            response.Errors = erros;
+        }
+
+        var mapperAccount = _mapper.Map<Account>(loginRequest);
+
+        var loggetInAccount = await _accountRepository.GetByEmailAndPasswordAsync(mapperAccount);
 
         if (loggetInAccount == null)
         {
@@ -86,25 +113,25 @@ public class AccountService : IAccountService
         return response;
     }
 
-    public async Task<LoginResponse> GetTasksByAccount(AccountLoginRequestDto account)
+    public async Task<LoginResponse> GetTasksForAccount(AccountLoginRequestDto loginRequest)
     {
         var response = new LoginResponse();
 
-        var loggetInAccount = await LoginUser(account);
+        var userLoginResult = await LoginUser(loginRequest);
 
-        if (!loggetInAccount.IsSuccess)
+        if (!userLoginResult.IsSuccess)
         {
-            response.Meta.StatusCode = 200;
+            response.Meta.StatusCode = StatusCodes.Status401Unauthorized;
             response.Meta.Message = "Error al buscar tareas";
 
             return response;
         }
 
-        var userTasks = await _taskRepository.GetByUserIdAsync(loggetInAccount.Data!.UserId);
+        var userTasks = await _taskRepository.GetByUserIdAsync(userLoginResult.Data!.UserId);
 
         response.Meta.StatusCode = 200;
         response.Meta.Message = "Tareas encontradas";
-        response.Data.User = loggetInAccount.Data;
+        response.Data.User = userLoginResult.Data;
         response.Data.Lists = _mapper.Map<IEnumerable<TaskReponseDto>>(userTasks);
 
         return response;

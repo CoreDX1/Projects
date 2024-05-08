@@ -8,6 +8,7 @@ public class ApiResponse
     public bool IsSuccess { get; set; }
     public int StatusCode { get; set; }
     public string? Message { get; set; }
+    public Dictionary<string, List<string>> Errors { get; set; } = new Dictionary<string, List<string>>();
 }
 
 public class ApiResponse<T> : ApiResponse
@@ -15,6 +16,11 @@ public class ApiResponse<T> : ApiResponse
     public T? Data { get; set; }
 }
 
+public class ValidationError
+{
+    public string Password { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+}
 
 /// Login
 public class Data
@@ -35,6 +41,3 @@ public record LoginResponse
     public Data Data { get; set; } = new Data();
 }
 ///
-
-
-

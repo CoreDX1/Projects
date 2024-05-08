@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TasksService } from '../../services/tasks.service';
 import { AccountLoginRequest } from '../../models/AccountLoginRequest';
@@ -10,44 +10,60 @@ import { lastValueFrom } from 'rxjs';
     selector: 'app-login',
     standalone: true,
     imports: [FormsModule, TodoComponent],
-    templateUrl: './login.component.html',
+    templateUrl: './login.component.html'
 })
 export class LoginComponent {
     listTasks: ApiResponse<Data> = {
+        meta: {
+            statusCode: 0,
+            message: ''
+        },
         data: {
-            lists: [],
             user: {
                 createAt: '',
                 email: '',
                 password: '',
                 userId: 0,
-                userName: '',
+                userName: ''
             },
+            lists: []
         },
-        meta: {
-            message: '',
-            statusCode: 0,
-        },
-    };
-
-    isLogged = false;
-
-    account: AccountLoginRequest = {
-        password: '',
-        email: '',
-    };
-
-    private taskService = inject(TasksService);
-
-    async Login() {
-        const tasks = this.taskService.PostTask(this.account);
-
-        this.listTasks = await lastValueFrom(tasks);
-
-        if (this.listTasks.meta.statusCode == 200) {
-            this.isLogged = true;
+        errors: {
+            Password: [],
+            Email: []
         }
+    };
 
-        return tasks;
+    isLoggedIn = false;
+
+    loginCredentials: AccountLoginRequest = {
+        password: '',
+        email: ''
+    };
+
+    private readonly taskService: TasksService;
+
+    constructor(taskService: TasksService) {
+        this.taskService = taskService;
+    }
+
+    public async AttemptLogin(): Promise<void> {
+        try {
+            const loginResponse = await lastValueFrom(this.taskService.PostTask(this.loginCredentials));
+            console.log(loginResponse);
+            this.listTasks = loginResponse;
+            // if (loginResponse.meta.statusCode != HttpStatusCode.Unauthorized) {
+            //     this.isLoggedIn = true;
+            // }
+
+            setInterval(() => {
+                this.listTasks.errors = {
+                    Email: [],
+                    Password: []
+                };
+            }, 5000);
+        } catch (error) {
+            console.log(error);
+        }
     }
 }

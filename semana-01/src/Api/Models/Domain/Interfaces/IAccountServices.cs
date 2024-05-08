@@ -9,6 +9,6 @@ public interface IAccountService
     public Task<ApiResponse<IEnumerable<AccountResponseDto>>> GetAllAsync();
     public Task<ApiResponse<Account>> PostRegister(AccountResponseDto account);
     public Task<ApiResponse<Account>> LoginUser(AccountLoginRequestDto account);
-    public Task<LoginResponse> GetTasksByAccount(AccountLoginRequestDto account);
+    public Task<LoginResponse> GetTasksForAccount(AccountLoginRequestDto account);
     public Task<Tasks> DeleteTask(int id);
 }

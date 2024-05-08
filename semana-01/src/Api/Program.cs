@@ -1,9 +1,13 @@
 using Api.Data;
 using Api.Models.Domain.Interfaces;
+using Api.Models.Dto.Account;
 using Api.Models.Mapper;
 using Api.Services;
 using Api.Services.Repository;
+using Api.Validation;
 using AutoMapper;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,21 +16,22 @@ builder.Services.AddTransient<IAccountService, AccountService>();
 builder.Services.AddTransient<ITaskRepository, TaskRepository>();
 builder.Services.AddTransient<IAccountRepository, AccountRepository>();
 
-// var mapperConfig = new MapperConfiguration(mc =>
-// {
-//     mc.AddProfile(new AutoMapperProfiles());
-// });
-
-// IMapper mapper = mapperConfig.CreateMapper();
-// builder.Services.AddSingleton(mapper);
-// builder.Services.AddTransient<IAccountService, AccountService>();
-
-var config = new MapperConfiguration(cfg =>
+// Mapper Config
+var mapperConfig = new MapperConfiguration(mc =>
 {
-    cfg.AddMaps(typeof(AutoMapperProfiles).Assembly);
+    mc.AddProfile(new AutoMapperProfiles());
 });
 
-builder.Services.AddSingleton(config.CreateMapper());
+IMapper mapper = mapperConfig.CreateMapper();
+builder.Services.AddSingleton(mapper);
+builder.Services.AddTransient<IAccountService, AccountService>();
+
+/* var config = new MapperConfiguration(cfg => */
+/* { */
+/*     cfg.AddMaps(typeof(AutoMapperProfiles).Assembly); */
+/* }); */
+
+/* builder.Services.AddSingleton(config.CreateMapper()); */
 
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
@@ -34,6 +39,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddControllers();
+
+// Add services for Validation
+builder.Services.AddTransient<AccountValidation>();
+builder.Services.AddTransient<IValidator<AccountLoginRequestDto>, AccountValidation>();
+
 builder.Services.AddDbContext<Semana01Context>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("StringConnection"));

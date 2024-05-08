@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Tasks } from '../models/todo';
 import { AccountLoginRequest } from '../models/AccountLoginRequest';
@@ -12,11 +12,8 @@ export class TasksService {
     private http = inject(HttpClient);
     private urlApi = 'http://localhost:5100/api/Account';
 
-    PostTask(account: AccountLoginRequest) {
-        const task = this.http.post<ApiResponse<Data>>(
-            `${this.urlApi}/gettasks`,
-            account
-        );
+    PostTask(account: AccountLoginRequest): Observable<ApiResponse<Data>> {
+        const task = this.http.post<ApiResponse<Data>>(`${this.urlApi}/login`, account);
         return task;
     }
 
@@ -29,10 +26,7 @@ export class TasksService {
                 id: id,
             },
         };
-        const task = this.http.delete<Tasks>(
-            'http://localhost:5100/api/Account/DeleteTask',
-            optios
-        );
+        const task = this.http.delete<Tasks>('http://localhost:5100/api/Account/DeleteTask', optios);
 
         return task;
     }

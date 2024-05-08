@@ -61,7 +61,7 @@ public class AccountController : Controller
     [ProducesDefaultResponseType]
     public async Task<ActionResult> GetTasks([FromBody] AccountLoginRequestDto account)
     {
-        var response = await _app.GetTasksByAccount(account);
+        var response = await _app.GetTasksForAccount(account);
         return Ok(response);
     }
 

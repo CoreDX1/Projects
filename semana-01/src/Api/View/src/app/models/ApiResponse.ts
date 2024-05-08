@@ -4,6 +4,7 @@ export interface ApiResponse<T> {
         message: string;
     };
     data: T;
+    errors: ErrorLogin;
 }
 
 interface User {
@@ -12,6 +13,11 @@ interface User {
     password: string;
     email: string;
     createAt: string;
+}
+
+interface ErrorLogin {
+    Password: Array<string>;
+    Email: Array<string>;
 }
 
 interface Task {

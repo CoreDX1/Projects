@@ -111,3 +111,7 @@
 /home/core/Desktop/Projects/semana-01/src/Api/bin/Debug/net8.0/zh-Hans/Microsoft.CodeAnalysis.Workspaces.resources.dll
 /home/core/Desktop/Projects/semana-01/src/Api/bin/Debug/net8.0/zh-Hant/Microsoft.CodeAnalysis.Workspaces.resources.dll
 /home/core/Desktop/Projects/semana-01/src/Api/bin/Debug/net8.0/AutoMapper.dll
+/home/core/Desktop/Projects/semana-01/src/Api/bin/Debug/net8.0/View/dist/view/prerendered-routes.json
+/home/core/Desktop/Projects/semana-01/src/Api/bin/Debug/net8.0/FluentValidation.dll
+/home/core/Desktop/Projects/semana-01/src/Api/bin/Debug/net8.0/FluentValidation.AspNetCore.dll
+/home/core/Desktop/Projects/semana-01/src/Api/bin/Debug/net8.0/FluentValidation.DependencyInjectionExtensions.dll

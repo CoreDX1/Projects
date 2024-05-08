@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ApiResponse, Data } from '../../models/ApiResponse';
 import { TasksService } from '../../services/tasks.service';
 
@@ -6,35 +6,28 @@ import { TasksService } from '../../services/tasks.service';
     selector: 'app-todo',
     standalone: true,
     imports: [],
-    templateUrl: './todo.component.html',
+    templateUrl: './todo.component.html'
 })
 export class TodoComponent {
-    private taskService = inject(TasksService);
+    @Input() public listTasks: ApiResponse<Data> | null = null;
 
-    @Input() public listTasks: ApiResponse<Data> = {
-        data: {
-            lists: [],
-            user: {
-                createAt: '',
-                email: '',
-                password: '',
-                userId: 0,
-                userName: '',
-            },
-        },
-        meta: {
-            message: '',
-            statusCode: 0,
-        },
-    };
+    private readonly taskService: TasksService;
 
-    DeleteTaskId(id: number) {
-        this.taskService.DeleteTask(id).subscribe();
+    constructor(taskService: TasksService) {
+        this.taskService = taskService;
+    }
 
-        this.listTasks.data.lists = this.listTasks.data.lists.filter(
-            item => item.id !== id
-        );
+    async DeleteTaskId(id: number) {
+        try {
+            await this.taskService.DeleteTask(id);
 
-        return this.listTasks;
+            if (!this.listTasks) return;
+
+            this.listTasks.data.lists = this.listTasks.data.lists.filter((item) => item.id !== id);
+            return this.listTasks;
+        } catch (error) {
+            console.log(error);
+            return error;
+        }
     }
 }
