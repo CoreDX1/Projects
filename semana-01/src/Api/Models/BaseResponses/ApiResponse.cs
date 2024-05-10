@@ -5,7 +5,7 @@ namespace Api.Models.BaseResponses;
 
 public class ApiResult
 {
-    public ResponseMetadata ResponseMetadata { get; set; } = new ResponseMetadata();
+    public ResponseMetadata ResponseMetadata { get; } = new();
 
     public Dictionary<string, List<string>> Errors { get; set; } = new();
 
@@ -23,11 +23,26 @@ public class ApiResult
 
         Errors = error;
     }
+
+    public void SetStatusCode(int code)
+    {
+        ResponseMetadata.StatusCode = code;
+    }
+
+    public void SetMessage(string message)
+    {
+        ResponseMetadata.Message = message;
+    }
 }
 
 public class ApiResult<T> : ApiResult
 {
     public T? Data { get; set; }
+
+    public void SetData(T data)
+    {
+        Data = data;
+    }
 }
 
 public class ValidationError
@@ -45,5 +60,5 @@ public class UserData
 public class ResponseMetadata
 {
     public int StatusCode { get; set; }
-    public string? Message { get; set; }
+    public string Message { get; set; } = string.Empty;
 }
