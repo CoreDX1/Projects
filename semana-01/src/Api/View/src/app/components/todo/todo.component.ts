@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ApiResponse, Data } from '../../models/ApiResponse';
+import { ApiResult, Data } from '../../models/ApiResult';
 import { TasksService } from '../../services/tasks.service';
 
 @Component({
@@ -9,7 +9,7 @@ import { TasksService } from '../../services/tasks.service';
     templateUrl: './todo.component.html'
 })
 export class TodoComponent {
-    @Input() public listTasks: ApiResponse<Data> | null = null;
+    @Input() public listTasks: ApiResult<Data> | null = null;
 
     private readonly taskService: TasksService;
 

@@ -25,24 +25,22 @@ public class AccountService : IAccountService
         _accountValidation = accountValidation;
     }
 
-    public async Task<ApiResponse<IEnumerable<AccountResponseDto>>> GetAllAsync()
+    public async Task<ApiResult<IEnumerable<AccountResponseDto>>> GetAllAsync()
     {
         var account = await _accountRepository.GetAllAsync();
 
-        var response = new ApiResponse<IEnumerable<AccountResponseDto>>()
+        var response = new ApiResult<IEnumerable<AccountResponseDto>>()
         {
             Data = _mapper.Map<IEnumerable<AccountResponseDto>>(account),
-            IsSuccess = true,
-            Message = "Cuentas encontradas",
-            StatusCode = StatusCodes.Status200OK
+            ResponseMetadata = { Message = "Cuentas encontradas", StatusCode = StatusCodes.Status200OK },
         };
 
         return response;
     }
 
-    public async Task<ApiResponse<Account>> PostRegister(AccountResponseDto loginRequest)
+    public async Task<ApiResult<Account>> PostRegister(AccountResponseDto loginRequest)
     {
-        var response = new ApiResponse<Account>();
+        var response = new ApiResult<Account>();
 
         var account = _mapper.Map<Account>(loginRequest);
 
@@ -50,46 +48,32 @@ public class AccountService : IAccountService
 
         if (!addAccount)
         {
-            response.IsSuccess = false;
-            response.StatusCode = StatusCodes.Status400BadRequest;
-            response.Message = "Cuenta ya existe";
+            response.ResponseMetadata.StatusCode = StatusCodes.Status400BadRequest;
+            response.ResponseMetadata.Message = "Cuenta ya existe";
         }
         else
         {
-            response.IsSuccess = true;
-            response.StatusCode = StatusCodes.Status200OK;
-            response.Message = "Cuenta creada";
+            response.ResponseMetadata.StatusCode = StatusCodes.Status200OK;
+            response.ResponseMetadata.Message = "Cuenta creada";
         }
 
         return response;
     }
 
-    public async Task<ApiResponse<Account>> LoginUser(AccountLoginRequestDto loginRequest)
+    public async Task<ApiResult<Account>> LoginUser(AccountLoginRequestDto loginRequest)
     {
-        var response = new ApiResponse<Account>();
+        var response = new ApiResult<Account>();
 
-        var erros = new Dictionary<string, List<string>>();
+        var error = new Dictionary<string, List<string>>();
 
         var validationResult = await _accountValidation.ValidateAsync(loginRequest);
 
-        foreach (var error in validationResult.Errors)
-        {
-            if (!erros.ContainsKey(error.PropertyName))
-            {
-                erros.Add(error.PropertyName, new List<string> { error.ErrorMessage });
-            }
-            else
-            {
-                erros[error.PropertyName].Add(error.ErrorMessage);
-            }
-        }
-
         if (!validationResult.IsValid)
         {
-            response.IsSuccess = false;
-            response.StatusCode = StatusCodes.Status400BadRequest;
-            response.Message = "Error de validacion";
-            response.Errors = erros;
+            response.ResponseMetadata.StatusCode = StatusCodes.Status400BadRequest;
+            response.ResponseMetadata.Message = "Error de validacion";
+            response.SetError(validationResult.Errors);
+            return response;
         }
 
         var mapperAccount = _mapper.Map<Account>(loginRequest);
@@ -98,40 +82,39 @@ public class AccountService : IAccountService
 
         if (loggetInAccount == null)
         {
-            response.IsSuccess = false;
-            response.StatusCode = StatusCodes.Status401Unauthorized;
-            response.Message = "Credenciales incorrectas";
-            response.Data = null;
+            response.ResponseMetadata.StatusCode = StatusCodes.Status401Unauthorized;
+            response.ResponseMetadata.Message = "Credenciales incorrectas";
+            response.Data = new Account();
         }
         else
         {
-            response.IsSuccess = true;
-            response.StatusCode = StatusCodes.Status200OK;
-            response.Message = "Credenciales correctas";
+            response.ResponseMetadata.StatusCode = StatusCodes.Status200OK;
+            response.ResponseMetadata.Message = "Credenciales correctas";
             response.Data = loggetInAccount;
         }
         return response;
     }
 
-    public async Task<LoginResponse> GetTasksForAccount(AccountLoginRequestDto loginRequest)
+    public async Task<ApiResult<UserData>> GetTasksForAccount(AccountLoginRequestDto loginRequest)
     {
-        var response = new LoginResponse();
+        var response = new ApiResult<UserData>();
 
         var userLoginResult = await LoginUser(loginRequest);
 
-        if (!userLoginResult.IsSuccess)
+        if (!userLoginResult.ResponseMetadata.StatusCode.Equals(200))
         {
-            response.Meta.StatusCode = StatusCodes.Status401Unauthorized;
-            response.Meta.Message = "Error al buscar tareas";
+            response.ResponseMetadata.StatusCode = userLoginResult.ResponseMetadata.StatusCode;
+            response.ResponseMetadata.Message = userLoginResult.ResponseMetadata.Message;
+            // response.Errors = userLoginResult.Errors;
 
             return response;
         }
 
         var userTasks = await _taskRepository.GetByUserIdAsync(userLoginResult.Data!.UserId);
 
-        response.Meta.StatusCode = 200;
-        response.Meta.Message = "Tareas encontradas";
-        response.Data.User = userLoginResult.Data;
+        response.ResponseMetadata.StatusCode = StatusCodes.Status200OK;
+        response.ResponseMetadata.Message = "Tareas encontradas";
+        response.Data!.User = userLoginResult.Data;
         response.Data.Lists = _mapper.Map<IEnumerable<TaskReponseDto>>(userTasks);
 
         return response;

@@ -17,14 +17,16 @@ content-type: application/json
     "email": ""
 }
 
+
+
 ###
 
 POST {{host}}/api/account/gettasks
 content-type: application/json
 
 {
-     "password": "password123",
-     "email": "johndoe@example.com"
+    "password": "",
+    "email": "janesmith@example.com"
 }
 
 ### 

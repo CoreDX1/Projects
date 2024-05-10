@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TasksService } from '../../services/tasks.service';
 import { AccountLoginRequest } from '../../models/AccountLoginRequest';
-import { ApiResponse, Data } from '../../models/ApiResponse';
+import { ApiResult, Data } from '../../models/ApiResult';
 import { TodoComponent } from '../todo/todo.component';
 import { lastValueFrom } from 'rxjs';
 
@@ -13,7 +13,7 @@ import { lastValueFrom } from 'rxjs';
     templateUrl: './login.component.html'
 })
 export class LoginComponent {
-    listTasks: ApiResponse<Data> = {
+    listTasks: ApiResult<Data> = {
         meta: {
             statusCode: 0,
             message: ''

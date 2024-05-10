@@ -3,15 +3,29 @@ using Api.Models.Dto.Account;
 
 namespace Api.Models.BaseResponses;
 
-public class ApiResponse
+public class ApiResult
 {
-    public bool IsSuccess { get; set; }
-    public int StatusCode { get; set; }
-    public string? Message { get; set; }
-    public Dictionary<string, List<string>> Errors { get; set; } = new Dictionary<string, List<string>>();
+    public ResponseMetadata ResponseMetadata { get; set; } = new ResponseMetadata();
+
+    public Dictionary<string, List<string>> Errors { get; set; } = new();
+
+    public void SetError(List<FluentValidation.Results.ValidationFailure> validateError)
+    {
+        var error = new Dictionary<string, List<string>>();
+
+        foreach (var item in validateError)
+        {
+            if (!error.ContainsKey(item.PropertyName))
+                error.Add(item.PropertyName, new List<string> { item.ErrorMessage });
+            else
+                error[item.PropertyName].Add(item.ErrorMessage);
+        }
+
+        Errors = error;
+    }
 }
 
-public class ApiResponse<T> : ApiResponse
+public class ApiResult<T> : ApiResult
 {
     public T? Data { get; set; }
 }
@@ -22,22 +36,14 @@ public class ValidationError
     public string Email { get; set; } = string.Empty;
 }
 
-/// Login
-public class Data
+public class UserData
 {
     public Account User { get; set; } = new Account();
     public IEnumerable<TaskReponseDto>? Lists { get; set; } = new List<TaskReponseDto>();
 }
 
-public class Meta
+public class ResponseMetadata
 {
     public int StatusCode { get; set; }
     public string? Message { get; set; }
 }
-
-public record LoginResponse
-{
-    public Meta Meta { get; set; } = new Meta();
-    public Data Data { get; set; } = new Data();
-}
-///

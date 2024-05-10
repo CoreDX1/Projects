@@ -1,4 +1,4 @@
-export interface ApiResponse<T> {
+export interface ApiResult<T> {
     meta: {
         statusCode: number;
         message: string;
