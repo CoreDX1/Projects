@@ -5,7 +5,7 @@ namespace Api.Models.BaseResponses;
 
 public class ApiResult
 {
-    public ResponseMetadata ResponseMetadata { get; } = new();
+    public ResponseMetadata ResponseMetadata { get; set; } = new();
 
     public Dictionary<string, List<string>> Errors { get; set; } = new();
 
@@ -54,7 +54,7 @@ public class ValidationError
 public class UserData
 {
     public Account User { get; set; } = new Account();
-    public IEnumerable<TaskReponseDto>? Lists { get; set; } = new List<TaskReponseDto>();
+    public IEnumerable<TaskReponseDto> Lists { get; set; } = new List<TaskReponseDto>();
 }
 
 public class ResponseMetadata

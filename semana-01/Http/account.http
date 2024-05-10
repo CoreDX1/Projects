@@ -13,8 +13,8 @@ POST {{host}}/api/account/login
 content-type: application/json
 
 {
-    "password": "",
-    "email": ""
+    "password": "ilovecats",
+    "email": "janesmith@example.com"
 }
 
 
@@ -25,7 +25,7 @@ POST {{host}}/api/account/gettasks
 content-type: application/json
 
 {
-    "password": "",
+    "password": "ilovecats",
     "email": "janesmith@example.com"
 }
 

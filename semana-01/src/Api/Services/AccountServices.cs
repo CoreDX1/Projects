@@ -95,11 +95,12 @@ public class AccountService : IAccountService
 
     public async Task<ApiResult<UserData>> GetTasksForAccount(AccountLoginRequestDto loginRequest)
     {
-        var response = new ApiResult<UserData>();
+        ApiResult<UserData> response = new();
 
         var userLoginResult = await LoginUser(loginRequest);
         var statuscode = userLoginResult.ResponseMetadata.StatusCode;
         var message = userLoginResult.ResponseMetadata.Message;
+        var user = userLoginResult.Data;
 
         if (!statuscode.Equals(200))
         {
@@ -110,11 +111,12 @@ public class AccountService : IAccountService
             return response;
         }
 
-        var userTasks = await _taskRepository.GetByUserIdAsync(userLoginResult.Data!.UserId);
+        var userTasks = await _taskRepository.GetByUserIdAsync(userLoginResult.Data.UserId);
 
         response.SetStatusCode(StatusCodes.Status200OK);
         response.SetMessage("Tareas encontradas");
-        response.Data!.User = userLoginResult.Data;
+
+        response.Data.User = userLoginResult.Data;
         response.Data.Lists = _mapper.Map<IEnumerable<TaskReponseDto>>(userTasks);
 
         return response;
