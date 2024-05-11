@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using Api.Data;
 using Api.Models.Domain.Entities;
 using Api.Models.Domain.Interfaces;
@@ -31,5 +32,25 @@ public class TaskRepository : ITaskRepository
 		_db.Tasks.Remove(task);
 		await _db.SaveChangesAsync();
 		return task;
+	}
+
+	public async Task<Tasks> AddTask(Tasks task, Account user)
+	{
+		Tasks newTask =
+			new()
+			{
+				UserId = user.UserId,
+				Title = task.Title,
+				Description = task.Description,
+				DueDate = new DateOnly(),
+				Completed = false,
+				CratedAt = new DateTime(),
+				UpdateAt = new DateTime()
+			};
+
+		await _db.AddAsync(newTask);
+		await _db.SaveChangesAsync();
+
+		return newTask;
 	}
 }

@@ -30,20 +30,17 @@ public class AccountService : IAccountService
 		var account = await _accountRepository.GetAllAsync();
 		var mapperAccount = _mapper.Map<IEnumerable<AccountResponseDto>>(account);
 
-		return ApiResult<IEnumerable<AccountResponseDto>>.Success(mapperAccount, "Cuentas encontradas", StatusCodes.Status200OK);
+		return ApiResult<IEnumerable<AccountResponseDto>>.Success(mapperAccount, "Cuentas encontradas", 200);
 	}
 
 	public async Task<ApiResult<Account>> PostRegister(AccountResponseDto loginRequest)
 	{
 		var account = _mapper.Map<Account>(loginRequest);
-
 		var addAccount = await _accountRepository.AddAsync(account);
-
 		if (!addAccount)
 		{
 			return ApiResult<Account>.Error("Cuenta ya existe", StatusCodes.Status400BadRequest);
 		}
-
 		return ApiResult<Account>.Success(account, "Cuenta registrada", StatusCodes.Status200OK);
 	}
 
