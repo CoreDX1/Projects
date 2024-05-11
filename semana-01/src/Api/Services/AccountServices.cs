@@ -10,111 +10,82 @@ namespace Api.Services;
 
 public class AccountService : IAccountService
 {
-    private readonly Semana01Context _db;
-    private readonly IAccountRepository _accountRepository;
-    private readonly ITaskRepository _taskRepository;
-    private readonly IMapper _mapper;
-    private readonly AccountValidation _accountValidation;
+	private readonly Semana01Context _db;
+	private readonly IAccountRepository _accountRepository;
+	private readonly ITaskRepository _taskRepository;
+	private readonly IMapper _mapper;
+	private readonly AccountValidation _accountValidation;
 
-    public AccountService(Semana01Context db, IAccountRepository accountRepository, ITaskRepository taskRepository, IMapper mapper, AccountValidation accountValidation)
-    {
-        _db = db;
-        _accountRepository = accountRepository;
-        _taskRepository = taskRepository;
-        _mapper = mapper;
-        _accountValidation = accountValidation;
-    }
+	public AccountService(Semana01Context db, IAccountRepository accountRepository, ITaskRepository taskRepository, IMapper mapper, AccountValidation accountValidation)
+	{
+		_db = db;
+		_accountRepository = accountRepository;
+		_taskRepository = taskRepository;
+		_mapper = mapper;
+		_accountValidation = accountValidation;
+	}
 
-    public async Task<ApiResult<IEnumerable<AccountResponseDto>>> GetAllAsync()
-    {
-        var account = await _accountRepository.GetAllAsync();
+	public async Task<ApiResult<IEnumerable<AccountResponseDto>>> GetAllAsync()
+	{
+		var account = await _accountRepository.GetAllAsync();
+		var mapperAccount = _mapper.Map<IEnumerable<AccountResponseDto>>(account);
 
-        var response = new ApiResult<IEnumerable<AccountResponseDto>>();
+		return ApiResult<IEnumerable<AccountResponseDto>>.Success(mapperAccount, "Cuentas encontradas", StatusCodes.Status200OK);
+	}
 
-        response.SetStatusCode(StatusCodes.Status200OK);
-        response.SetMessage("Cuentas encontradas");
-        response.SetData(_mapper.Map<IEnumerable<AccountResponseDto>>(account));
+	public async Task<ApiResult<Account>> PostRegister(AccountResponseDto loginRequest)
+	{
+		var account = _mapper.Map<Account>(loginRequest);
 
-        return response;
-    }
+		var addAccount = await _accountRepository.AddAsync(account);
 
-    public async Task<ApiResult<Account>> PostRegister(AccountResponseDto loginRequest)
-    {
-        var response = new ApiResult<Account>();
+		if (!addAccount)
+		{
+			return ApiResult<Account>.Error("Cuenta ya existe", StatusCodes.Status400BadRequest);
+		}
 
-        var account = _mapper.Map<Account>(loginRequest);
+		return ApiResult<Account>.Success(account, "Cuenta registrada", StatusCodes.Status200OK);
+	}
 
-        var addAccount = await _accountRepository.AddAsync(account);
+	public async Task<ApiResult<Account>> LoginUser(AccountLoginRequestDto loginRequest)
+	{
+		var validationResult = await _accountValidation.ValidateAsync(loginRequest);
 
-        if (!addAccount)
-        {
-            response.SetStatusCode(StatusCodes.Status400BadRequest);
-            response.SetMessage("Cuenta ya existe");
-        }
-        else
-        {
-            response.SetStatusCode(StatusCodes.Status200OK);
-            response.SetMessage("Cuenta creada");
-        }
+		if (!validationResult.IsValid)
+			return ApiResult<Account>.Error(validationResult.Errors, "Error de validacion", 400);
 
-        return response;
-    }
+		var mapperAccount = _mapper.Map<Account>(loginRequest);
 
-    public async Task<ApiResult<Account>> LoginUser(AccountLoginRequestDto loginRequest)
-    {
-        var validationResult = await _accountValidation.ValidateAsync(loginRequest);
+		var loggetInAccount = await _accountRepository.GetByEmailAndPasswordAsync(mapperAccount);
 
-        if (!validationResult.IsValid)
-            return ApiResult<Account>.ErrorValidation(validationResult.Errors, "Error de validacion", 400);
+		if (loggetInAccount is null)
+		{
+			return ApiResult<Account>.Error("Credenciales incorrectas", StatusCodes.Status401Unauthorized);
+		}
 
-        var mapperAccount = _mapper.Map<Account>(loginRequest);
+		return ApiResult<Account>.Success(loggetInAccount, "Credenciales correctas", StatusCodes.Status200OK);
+	}
 
-        var loggetInAccount = await _accountRepository.GetByEmailAndPasswordAsync(mapperAccount);
+	public async Task<ApiResult<UserData>> GetTasksForAccount(AccountLoginRequestDto loginRequest)
+	{
+		var userLoginResult = await LoginUser(loginRequest);
 
-        if (loggetInAccount is null)
-            return ApiResult<Account>.Error("Credenciales incorrectas", StatusCodes.Status401Unauthorized);
+		if (userLoginResult.ResponseMetadata.StatusCode == 401)
+		{
+			return ApiResult<UserData>.Error(userLoginResult.Errors, "Error de validacion", 400);
+		}
 
-        return ApiResult<Account>.Success(loggetInAccount, "Credenciales correctas", StatusCodes.Status200OK);
-    }
+		var userTasks = await _taskRepository.GetByUserIdAsync(userLoginResult.Data!.UserId);
 
-    public async Task<ApiResult<UserData>> GetTasksForAccount(AccountLoginRequestDto loginRequest)
-    {
-        var response = new ApiResult<UserData>();
+		UserData data = new() { User = userLoginResult.Data, Lists = _mapper.Map<IEnumerable<TaskReponseDto>>(userTasks) };
 
-        var userLoginResult = await LoginUser(loginRequest);
+		return ApiResult<UserData>.Success(data, "Tareas encontradas", StatusCodes.Status200OK);
+	}
 
-        if (userLoginResult.ResponseMetadata.Equals(StatusCodes.Status401Unauthorized))
-        {
-            response.SetStatusCode(400);
-            response.SetMessage("Error de validacion");
-            response.Errors = userLoginResult.Errors;
-            return response;
-        }
+	public async Task<ApiResult<Tasks>> DeleteTaskOfAccount(int id)
+	{
+		var task = await _taskRepository.DeleteTask(id);
 
-        var userTasks = await _taskRepository.GetByUserIdAsync(userLoginResult.Data!.UserId);
-
-        UserData data = new() { User = userLoginResult.Data, Lists = _mapper.Map<IEnumerable<TaskReponseDto>>(userTasks) };
-
-        response.SetStatusCode(StatusCodes.Status200OK);
-        response.SetMessage("Tareas encontradas");
-        response.SetData(data);
-
-        return response;
-    }
-
-    public async Task<Tasks> DeleteTask(int id)
-    {
-        var task = await _db.Tasks.FindAsync(id);
-
-        if (task == null)
-        {
-            return new Tasks();
-        }
-        else
-        {
-            _db.Tasks.Remove(task);
-            await _db.SaveChangesAsync();
-            return task;
-        }
-    }
+		return ApiResult<Tasks>.Success(task, "Tarea eliminada", StatusCodes.Status200OK);
+	}
 }
