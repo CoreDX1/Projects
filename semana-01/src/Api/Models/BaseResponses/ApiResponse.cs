@@ -5,10 +5,14 @@ namespace Api.Models.BaseResponses;
 
 public class ApiResult
 {
-    public ResponseMetadata ResponseMetadata { get; set; } = new();
+    public ResponseMetadata ResponseMetadata { get; set; } = new ResponseMetadata();
 
-    public Dictionary<string, List<string>> Errors { get; set; } = new();
+    public Dictionary<string, List<string>> Errors { get; set; } = new Dictionary<string, List<string>>();
 
+    /// <summary>
+    ///  Crea un nuevo objeto de errores
+    /// </summary>
+    /// <param name="validateError">Lista de errores</param>
     public void SetError(List<FluentValidation.Results.ValidationFailure> validateError)
     {
         var error = new Dictionary<string, List<string>>();
@@ -37,7 +41,7 @@ public class ApiResult
 
 public class ApiResult<T> : ApiResult
 {
-    public T? Data { get; set; }
+    public T? Data { get; set; } = default!;
 
     public void SetData(T data)
     {
@@ -53,8 +57,14 @@ public class ValidationError
 
 public class UserData
 {
-    public Account User { get; set; } = new Account();
+    public Account User { get; set; }
+
     public IEnumerable<TaskReponseDto> Lists { get; set; } = new List<TaskReponseDto>();
+
+    public UserData()
+    {
+        User = new Account();
+    }
 }
 
 public class ResponseMetadata
