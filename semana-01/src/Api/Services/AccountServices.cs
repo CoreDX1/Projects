@@ -62,35 +62,19 @@ public class AccountService : IAccountService
 
     public async Task<ApiResult<Account>> LoginUser(AccountLoginRequestDto loginRequest)
     {
-        var response = new ApiResult<Account>();
-
         var validationResult = await _accountValidation.ValidateAsync(loginRequest);
 
         if (!validationResult.IsValid)
-        {
-            response.SetMessage("Error de validacion");
-            response.SetStatusCode(StatusCodes.Status400BadRequest);
-            response.SetError(validationResult.Errors);
-            return response;
-        }
+            return ApiResult<Account>.ErrorValidation(validationResult.Errors, "Error de validacion", 400);
 
         var mapperAccount = _mapper.Map<Account>(loginRequest);
 
         var loggetInAccount = await _accountRepository.GetByEmailAndPasswordAsync(mapperAccount);
 
-        if (loggetInAccount == null)
-        {
-            response.SetStatusCode(StatusCodes.Status401Unauthorized);
-            response.SetMessage("Credenciales incorrectas");
-            response.SetData(new Account());
-        }
-        else
-        {
-            response.SetStatusCode(StatusCodes.Status200OK);
-            response.SetMessage("Credenciales correctas");
-            response.SetData(loggetInAccount);
-        }
-        return response;
+        if (loggetInAccount is null)
+            return ApiResult<Account>.Error("Credenciales incorrectas", StatusCodes.Status401Unauthorized);
+
+        return ApiResult<Account>.Success(loggetInAccount, "Credenciales correctas", StatusCodes.Status200OK);
     }
 
     public async Task<ApiResult<UserData>> GetTasksForAccount(AccountLoginRequestDto loginRequest)
@@ -104,16 +88,16 @@ public class AccountService : IAccountService
             response.SetStatusCode(400);
             response.SetMessage("Error de validacion");
             response.Errors = userLoginResult.Errors;
-
             return response;
         }
 
         var userTasks = await _taskRepository.GetByUserIdAsync(userLoginResult.Data!.UserId);
 
+        UserData data = new() { User = userLoginResult.Data, Lists = _mapper.Map<IEnumerable<TaskReponseDto>>(userTasks) };
+
         response.SetStatusCode(StatusCodes.Status200OK);
         response.SetMessage("Tareas encontradas");
-
-        response.Data = new UserData() { User = userLoginResult.Data, Lists = _mapper.Map<IEnumerable<TaskReponseDto>>(userTasks) };
+        response.SetData(data);
 
         return response;
     }

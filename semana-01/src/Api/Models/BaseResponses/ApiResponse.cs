@@ -3,17 +3,51 @@ using Api.Models.Dto.Account;
 
 namespace Api.Models.BaseResponses;
 
-public class ApiResult
+public class ApiResult<T>
 {
     public ResponseMetadata ResponseMetadata { get; set; } = new ResponseMetadata();
 
     public Dictionary<string, List<string>> Errors { get; set; } = new Dictionary<string, List<string>>();
 
+    public T? Data { get; set; }
+
+    public void SetData(T data)
+    {
+        Data = data;
+    }
+
+    public static ApiResult<T> Success(T data, string message = "Operacion exitosa", int code = 200)
+    {
+        return new ApiResult<T>
+        {
+            Data = data,
+            ResponseMetadata = new ResponseMetadata { Message = message, StatusCode = code },
+        };
+    }
+
+    public static ApiResult<T> Error(string message, int code)
+    {
+        return new ApiResult<T>
+        {
+            ResponseMetadata = new ResponseMetadata { Message = message, StatusCode = code }
+        };
+    }
+
+    public static ApiResult<T> ErrorValidation(List<FluentValidation.Results.ValidationFailure> validateError, string message, int code)
+    {
+        return new ApiResult<T>
+        {
+            Errors = SetError(validateError),
+            Data = default,
+            ResponseMetadata = new ResponseMetadata { Message = message, StatusCode = code }
+        };
+    }
+
     /// <summary>
     ///  Crea un nuevo objeto de errores
     /// </summary>
     /// <param name="validateError">Lista de errores</param>
-    public void SetError(List<FluentValidation.Results.ValidationFailure> validateError)
+    public static Dictionary<string, List<string>> SetError(List<FluentValidation.Results.ValidationFailure> validateError)
     {
         var error = new Dictionary<string, List<string>>();
 
@@ -25,7 +59,7 @@ public class ApiResult
                 error[item.PropertyName].Add(item.ErrorMessage);
         }
 
-        Errors = error;
+        return error;
     }
 
     public void SetStatusCode(int code)
@@ -36,16 +70,6 @@ public class ApiResult
     public void SetMessage(string message)
     {
         ResponseMetadata.Message = message;
-    }
-}
-
-public class ApiResult<T> : ApiResult
-{
-    public T? Data { get; set; } = default!;
-
-    public void SetData(T data)
-    {
-        Data = data;
     }
 }
 
