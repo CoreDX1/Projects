@@ -1,0 +1,12 @@
+/home/core/Desktop/Projects/semana-01/src/Utilities/bin/Debug/net8.0/Utilities.deps.json
+/home/core/Desktop/Projects/semana-01/src/Utilities/bin/Debug/net8.0/Utilities.dll
+/home/core/Desktop/Projects/semana-01/src/Utilities/bin/Debug/net8.0/Utilities.pdb
+/home/core/Desktop/Projects/semana-01/src/Utilities/obj/Debug/net8.0/Utilities.GeneratedMSBuildEditorConfig.editorconfig
+/home/core/Desktop/Projects/semana-01/src/Utilities/obj/Debug/net8.0/Utilities.AssemblyInfoInputs.cache
+/home/core/Desktop/Projects/semana-01/src/Utilities/obj/Debug/net8.0/Utilities.AssemblyInfo.cs
+/home/core/Desktop/Projects/semana-01/src/Utilities/obj/Debug/net8.0/Utilities.csproj.CoreCompileInputs.cache
+/home/core/Desktop/Projects/semana-01/src/Utilities/obj/Debug/net8.0/Utilities.sourcelink.json
+/home/core/Desktop/Projects/semana-01/src/Utilities/obj/Debug/net8.0/Utilities.dll
+/home/core/Desktop/Projects/semana-01/src/Utilities/obj/Debug/net8.0/refint/Utilities.dll
+/home/core/Desktop/Projects/semana-01/src/Utilities/obj/Debug/net8.0/Utilities.pdb
+/home/core/Desktop/Projects/semana-01/src/Utilities/obj/Debug/net8.0/ref/Utilities.dll

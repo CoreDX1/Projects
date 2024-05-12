@@ -116,3 +116,5 @@
 /home/core/Desktop/Projects/semana-01/src/Api/bin/Debug/net8.0/FluentValidation.AspNetCore.dll
 /home/core/Desktop/Projects/semana-01/src/Api/bin/Debug/net8.0/FluentValidation.DependencyInjectionExtensions.dll
 /home/core/Desktop/Projects/semana-01/src/Api/bin/Debug/net8.0/View/.eslintrc.json
+/home/core/Desktop/Projects/semana-01/src/Api/bin/Debug/net8.0/Utilities.dll
+/home/core/Desktop/Projects/semana-01/src/Api/bin/Debug/net8.0/Utilities.pdb

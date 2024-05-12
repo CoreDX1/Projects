@@ -7,7 +7,6 @@ using Api.Services.Repository;
 using Api.Validation;
 using AutoMapper;
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

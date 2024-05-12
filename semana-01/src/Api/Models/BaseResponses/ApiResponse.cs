@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Api.Models.Domain.Entities;
 using Api.Models.Dto.Account;
 
@@ -7,7 +8,8 @@ public class ApiResult<T>
 {
 	public ResponseMetadata ResponseMetadata { get; set; } = new ResponseMetadata();
 
-	public Dictionary<string, List<string>> Errors { get; set; } = new Dictionary<string, List<string>>();
+	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+	public Dictionary<string, List<string>> Errors { get; set; } = null!;
 
 	public T? Data { get; set; }
 
@@ -16,7 +18,7 @@ public class ApiResult<T>
 		Data = data;
 	}
 
-	public static ApiResult<T> Success(T data, string message = "Operacion exitosa", int code = 200)
+	public static ApiResult<T> Success(T data, string message, int code)
 	{
 		return new ApiResult<T>
 		{
@@ -76,7 +78,6 @@ public class ApiResult<T>
 			else
 				error[item.PropertyName].Add(item.ErrorMessage);
 		}
-
 		return error;
 	}
 

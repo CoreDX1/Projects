@@ -3,6 +3,7 @@ using Api.Models.BaseResponses;
 using Api.Models.Domain.Entities;
 using Api.Models.Domain.Interfaces;
 using Api.Models.Dto.Account;
+using Api.Utilities.Static;
 using Api.Validation;
 using AutoMapper;
 
@@ -30,7 +31,7 @@ public class AccountService : IAccountService
 		var account = await _accountRepository.GetAllAsync();
 		var mapperAccount = _mapper.Map<IEnumerable<AccountResponseDto>>(account);
 
-		return ApiResult<IEnumerable<AccountResponseDto>>.Success(mapperAccount, "Cuentas encontradas", 200);
+		return ApiResult<IEnumerable<AccountResponseDto>>.Success(mapperAccount, ReplyMessage.MESSAGE_QUERY, 200);
 	}
 
 	public async Task<ApiResult<Account>> PostRegister(AccountResponseDto loginRequest)
@@ -39,9 +40,9 @@ public class AccountService : IAccountService
 		var addAccount = await _accountRepository.AddAsync(account);
 		if (!addAccount)
 		{
-			return ApiResult<Account>.Error("Cuenta ya existe", StatusCodes.Status400BadRequest);
+			return ApiResult<Account>.Error(ReplyMessage.MESSAGE_EXISTS, StatusCodes.Status400BadRequest);
 		}
-		return ApiResult<Account>.Success(account, "Cuenta registrada", StatusCodes.Status200OK);
+		return ApiResult<Account>.Success(account, ReplyMessage.MESSAGE_SAVE, StatusCodes.Status200OK);
 	}
 
 	public async Task<ApiResult<Account>> LoginUser(AccountLoginRequestDto loginRequest)
@@ -49,40 +50,45 @@ public class AccountService : IAccountService
 		var validationResult = await _accountValidation.ValidateAsync(loginRequest);
 
 		if (!validationResult.IsValid)
-			return ApiResult<Account>.Error(validationResult.Errors, "Error de validacion", 400);
+			return ApiResult<Account>.Error(validationResult.Errors, ReplyMessage.MESSAGE_VALIDATE, 400);
 
 		var mapperAccount = _mapper.Map<Account>(loginRequest);
 
 		var loggetInAccount = await _accountRepository.GetByEmailAndPasswordAsync(mapperAccount);
 
-		if (loggetInAccount is null)
+		if (loggetInAccount == null)
 		{
-			return ApiResult<Account>.Error("Credenciales incorrectas", StatusCodes.Status401Unauthorized);
+			return ApiResult<Account>.Error(ReplyMessage.MESSAGE_TOKEN_ERROR, StatusCodes.Status401Unauthorized);
 		}
 
-		return ApiResult<Account>.Success(loggetInAccount, "Credenciales correctas", StatusCodes.Status200OK);
+		return ApiResult<Account>.Success(loggetInAccount, ReplyMessage.MESSAGE_TOKEN, StatusCodes.Status200OK);
 	}
 
 	public async Task<ApiResult<UserData>> GetTasksForAccount(AccountLoginRequestDto loginRequest)
 	{
 		var userLoginResult = await LoginUser(loginRequest);
 
-		if (userLoginResult.ResponseMetadata.StatusCode == 401)
+		// Temporal solution
+		if (userLoginResult.ResponseMetadata.StatusCode == 400)
 		{
-			return ApiResult<UserData>.Error(userLoginResult.Errors, "Error de validacion", 400);
+			return ApiResult<UserData>.Error(userLoginResult.Errors, ReplyMessage.MESSAGE_VALIDATE, 400);
+		}
+		else if (userLoginResult.ResponseMetadata.StatusCode == 401)
+		{
+			return ApiResult<UserData>.Error(userLoginResult.Errors, ReplyMessage.MESSAGE_TOKEN_ERROR, 401);
 		}
 
 		var userTasks = await _taskRepository.GetByUserIdAsync(userLoginResult.Data!.UserId);
 
 		UserData data = new() { User = userLoginResult.Data, Lists = _mapper.Map<IEnumerable<TaskReponseDto>>(userTasks) };
 
-		return ApiResult<UserData>.Success(data, "Tareas encontradas", StatusCodes.Status200OK);
+		return ApiResult<UserData>.Success(data, ReplyMessage.MESSAGE_QUERY, StatusCodes.Status200OK);
 	}
 
 	public async Task<ApiResult<Tasks>> DeleteTaskOfAccount(int id)
 	{
 		var task = await _taskRepository.DeleteTask(id);
 
-		return ApiResult<Tasks>.Success(task, "Tarea eliminada", StatusCodes.Status200OK);
+		return ApiResult<Tasks>.Success(task, ReplyMessage.MESSAGE_DELETE, StatusCodes.Status200OK);
 	}
 }

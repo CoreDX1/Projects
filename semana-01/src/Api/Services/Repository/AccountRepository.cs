@@ -21,12 +21,12 @@ public class AccountRepository : IAccountRepository
 
 	public async Task<Account> GetByEmailAndPasswordAsync(Account account)
 	{
-		return await _db.Accounts.AsNoTracking().FirstOrDefaultAsync(x => x.Email == account.Email && x.Password == account.Password) ?? new Account();
+		return await _db.Accounts.AsNoTracking().FirstOrDefaultAsync(x => x.Email == account.Email && x.Password == account.Password) ?? null!;
 	}
 
 	public async Task<bool> AddAsync(Account account)
 	{
-		var accountExists = await _db.Accounts.AnyAsync(x => x.Email == account.Email);
+		var accountExists = await _db.Accounts.AsNoTracking().AnyAsync(x => x.Email == account.Email);
 
 		if (accountExists)
 			return false;
