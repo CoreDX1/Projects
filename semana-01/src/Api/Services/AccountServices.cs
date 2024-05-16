@@ -7,7 +7,7 @@ using Api.Utilities.Static;
 using Api.Validation;
 using AutoMapper;
 
-namespace Api.Services;
+namespace Api.services;
 
 public class AccountService : IAccountService
 {
@@ -83,12 +83,5 @@ public class AccountService : IAccountService
 		UserData data = new() { User = userLoginResult.Data, Lists = _mapper.Map<IEnumerable<TaskReponseDto>>(userTasks) };
 
 		return ApiResult<UserData>.Success(data, ReplyMessage.MESSAGE_QUERY, StatusCodes.Status200OK);
-	}
-
-	public async Task<ApiResult<Tasks>> DeleteTaskOfAccount(int id)
-	{
-		var task = await _taskRepository.DeleteTask(id);
-
-		return ApiResult<Tasks>.Success(task, ReplyMessage.MESSAGE_DELETE, StatusCodes.Status200OK);
 	}
 }

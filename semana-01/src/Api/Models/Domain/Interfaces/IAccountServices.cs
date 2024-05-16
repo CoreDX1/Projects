@@ -10,5 +10,4 @@ public interface IAccountService
 	public Task<ApiResult<Account>> PostRegister(AccountResponseDto account);
 	public Task<ApiResult<Account>> LoginUser(AccountLoginRequestDto account);
 	public Task<ApiResult<UserData>> GetTasksForAccount(AccountLoginRequestDto account);
-	public Task<ApiResult<Tasks>> DeleteTaskOfAccount(int id);
 }

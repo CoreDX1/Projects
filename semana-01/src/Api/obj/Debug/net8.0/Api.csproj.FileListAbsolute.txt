@@ -118,3 +118,12 @@
 /home/core/Desktop/Projects/semana-01/src/Api/bin/Debug/net8.0/View/.eslintrc.json
 /home/core/Desktop/Projects/semana-01/src/Api/bin/Debug/net8.0/Utilities.dll
 /home/core/Desktop/Projects/semana-01/src/Api/bin/Debug/net8.0/Utilities.pdb
+/home/core/Desktop/Projects/semana-01/src/Api/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
+/home/core/Desktop/Projects/semana-01/src/Api/bin/Debug/net8.0/Microsoft.IdentityModel.Abstractions.dll
+/home/core/Desktop/Projects/semana-01/src/Api/bin/Debug/net8.0/Microsoft.IdentityModel.JsonWebTokens.dll
+/home/core/Desktop/Projects/semana-01/src/Api/bin/Debug/net8.0/Microsoft.IdentityModel.Logging.dll
+/home/core/Desktop/Projects/semana-01/src/Api/bin/Debug/net8.0/Microsoft.IdentityModel.Protocols.dll
+/home/core/Desktop/Projects/semana-01/src/Api/bin/Debug/net8.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+/home/core/Desktop/Projects/semana-01/src/Api/bin/Debug/net8.0/Microsoft.IdentityModel.Tokens.dll
+/home/core/Desktop/Projects/semana-01/src/Api/bin/Debug/net8.0/Newtonsoft.Json.dll
+/home/core/Desktop/Projects/semana-01/src/Api/bin/Debug/net8.0/System.IdentityModel.Tokens.Jwt.dll

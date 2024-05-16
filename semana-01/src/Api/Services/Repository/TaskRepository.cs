@@ -4,7 +4,7 @@ using Api.Models.Domain.Entities;
 using Api.Models.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Api.Services.Repository;
+namespace Api.services.Repository;
 
 public class TaskRepository : ITaskRepository
 {
