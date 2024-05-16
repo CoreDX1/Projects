@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
+
 var configuation = builder.Configuration;
 builder.Services.addAuthenticationJwt(configuation);
 builder.Services.AddInjectionApi();
-
-builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -35,9 +35,9 @@ builder.Services.AddCors(options =>
 		name: MyAllowSpecificOrigins,
 		builder =>
 		{
-			builder.WithOrigins("*");
+			builder.AllowAnyOrigin();
 			builder.AllowAnyHeader();
-			builder.WithMethods("*");
+			builder.AllowAnyMethod();
 		}
 	);
 });
@@ -56,6 +56,7 @@ app.UseCors(MyAllowSpecificOrigins);
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

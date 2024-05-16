@@ -1,6 +1,7 @@
 using Api.Models.Domain.Entities;
 using Api.Models.Domain.Interfaces;
 using Api.Models.Dto.Account;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -20,6 +21,7 @@ public class AccountController : Controller
 	/// Get all accounts
 	/// </summary>
 	/// <returns>List of accounts</returns>
+	[Authorize]
 	[HttpGet("Accounts")] // GET: api/account
 	[Produces("application/json")]
 	[ProducesDefaultResponseType]
@@ -52,12 +54,12 @@ public class AccountController : Controller
 		return StatusCode(200, response);
 	}
 
-	[HttpPost("GetTasks")] // POST: api/account/gettasks
-	[Produces("application/json")]
-	[ProducesDefaultResponseType]
-	public async Task<ActionResult> GetTasks([FromBody] AccountLoginRequestDto account)
-	{
-		var response = await _app.GetTasksForAccount(account);
-		return Ok(response);
-	}
+	// [HttpPost("GetTasks")] // POST: api/account/gettasks
+	// [Produces("application/json")]
+	// [ProducesDefaultResponseType]
+	// public async Task<ActionResult> GetTasks([FromBody] AccountLoginRequestDto account)
+	// {
+	// 	var response = await _app.GetTasksForAccount(account);
+	// 	return Ok(response);
+	// }
 }

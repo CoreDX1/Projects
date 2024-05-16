@@ -8,6 +8,6 @@ public interface IAccountService
 {
 	public Task<ApiResult<IEnumerable<AccountResponseDto>>> GetAllAsync();
 	public Task<ApiResult<Account>> PostRegister(AccountResponseDto account);
-	public Task<ApiResult<Account>> LoginUser(AccountLoginRequestDto account);
-	public Task<ApiResult<UserData>> GetTasksForAccount(AccountLoginRequestDto account);
+	public Task<ApiResult<string>> LoginUser(AccountLoginRequestDto account);
+	// public Task<ApiResult<UserData>> GetTasksForAccount(AccountLoginRequestDto account);
 }
